@@ -1,0 +1,25 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'uk.co.pete_b'
+version = '0.0.1-SNAPSHOT'
+
+description = """advent-of-code"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'commons-io', name: 'commons-io', version:'2.5'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.4'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+}
