@@ -34,8 +34,8 @@ public class Day02 {
         for (List<Integer> items : list) {
             items.sort((o1, o2) -> (o1 > o2) ? 1 : -1);
 
-            for (int i = 0; i<items.size(); i++) {
-                for (int j = 0; j<items.size(); j++) {
+            for (int i = 0; i < items.size(); i++) {
+                for (int j = 0; j < items.size(); j++) {
                     if (i == j) {
                         continue;
                     }
