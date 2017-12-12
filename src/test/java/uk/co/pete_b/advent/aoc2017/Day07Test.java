@@ -39,7 +39,8 @@ public class Day07Test {
 
     @Test
     public void getAnswers() throws IOException {
-        LOGGER.info("Part 1: " + Day07.findRootElement(IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2017/day07"), Charset.defaultCharset())));
-        LOGGER.info("Part 2: " + Day07.balanceTree(IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2017/day07"), Charset.defaultCharset())));
+        final String puzzleInput = IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2017/day07"), Charset.defaultCharset());
+        LOGGER.info("Part 1: " + Day07.findRootElement(puzzleInput));
+        LOGGER.info("Part 2: " + Day07.balanceTree(puzzleInput));
     }
 }
