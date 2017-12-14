@@ -34,7 +34,7 @@ public class Day10 {
         return inputList[0] * inputList[1];
     }
 
-    public static String calculateHashAscii(final String input) {
+    public static String calculateKnotHash(final String input) {
         final int[] lengths = new int[input.length() + 5];
         lengths[lengths.length - 5] = 17;
         lengths[lengths.length - 4] = 31;
