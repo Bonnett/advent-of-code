@@ -5,11 +5,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 public class Day14Test {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Day10Test.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Day14Test.class);
 
     @Test
     public void testExamples() {
@@ -19,7 +17,7 @@ public class Day14Test {
     }
 
     @Test
-    public void getAnswers() throws IOException {
+    public void getAnswers() {
         final Day14.Answers answer = Day14.calculateSquaresUsed("hfdlxzhv");
         LOGGER.info("Part 1: " + answer.getNumberOfSquaresUsed());
         LOGGER.info("Part 2: " + answer.getNumberOfGroups());
