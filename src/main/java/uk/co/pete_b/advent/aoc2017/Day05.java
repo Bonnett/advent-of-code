@@ -1,8 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Day05 {
 

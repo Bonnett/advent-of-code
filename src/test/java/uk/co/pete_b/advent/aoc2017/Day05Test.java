@@ -1,7 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,17 +8,19 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.Assert.assertEquals;
+
 public class Day05Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day05Test.class);
 
     @Test
     public void testPart1() {
-        Assert.assertEquals(5, Day05.findNoOfStepsPart1("0\n3\n0\n1\n-3"));
+        assertEquals(5, Day05.findNoOfStepsPart1("0\n3\n0\n1\n-3"));
     }
 
     @Test
     public void testPart2() {
-        Assert.assertEquals(10, Day05.findNoOfStepsPart2("0\n3\n0\n1\n-3"));
+        assertEquals(10, Day05.findNoOfStepsPart2("0\n3\n0\n1\n-3"));
     }
 
     @Test

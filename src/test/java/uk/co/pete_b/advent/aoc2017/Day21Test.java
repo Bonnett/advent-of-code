@@ -11,10 +11,11 @@ import java.nio.charset.Charset;
 import static org.junit.Assert.assertEquals;
 
 public class Day21Test {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Day20Test.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Day21Test.class);
 
     private static final String SAMPLE_INPUT = "../.# => ##./#../...\n" +
             ".#./..#/### => #..#/..../..../#..#";
+
     @Test
     public void testExamplesPart1() {
         assertEquals(12, Day21.getPixelsOn(2, SAMPLE_INPUT));

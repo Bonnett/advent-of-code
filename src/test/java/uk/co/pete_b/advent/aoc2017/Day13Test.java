@@ -1,13 +1,14 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day13Test {
 
@@ -20,12 +21,12 @@ public class Day13Test {
 
     @Test
     public void testPart1() {
-        Assert.assertEquals(24, Day13.getSeverity(SAMPLE_INPUT).getNoDelaySeverity());
+        assertEquals(24, Day13.getSeverity(SAMPLE_INPUT).getNoDelaySeverity());
     }
 
     @Test
     public void testPart2() {
-        Assert.assertEquals(10, Day13.getSeverity(SAMPLE_INPUT).getDelayToGetThrough());
+        assertEquals(10, Day13.getSeverity(SAMPLE_INPUT).getDelayToGetThrough());
     }
 
     @Test

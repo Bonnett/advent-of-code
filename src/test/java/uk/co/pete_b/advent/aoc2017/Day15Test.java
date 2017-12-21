@@ -1,9 +1,10 @@
 package uk.co.pete_b.advent.aoc2017;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day15Test {
 
@@ -11,17 +12,17 @@ public class Day15Test {
 
     @Test
     public void testPart1() {
-        Assert.assertEquals(588, Day15.getJudgeCount(65, 8921, false));
+        assertEquals(588, Day15.getJudgeCount(65, 8921, false));
     }
 
     @Test
     public void testPart2() {
-        Assert.assertEquals(309, Day15.getJudgeCount(65, 8921, true));
+        assertEquals(309, Day15.getJudgeCount(65, 8921, true));
     }
 
     @Test
     public void getAnswers() {
-        LOGGER.info("Part 1: " +  Day15.getJudgeCount(634, 301, false));
-        LOGGER.info("Part 2: " +  Day15.getJudgeCount(634, 301, true));
+        LOGGER.info("Part 1: " + Day15.getJudgeCount(634, 301, false));
+        LOGGER.info("Part 2: " + Day15.getJudgeCount(634, 301, true));
     }
 }

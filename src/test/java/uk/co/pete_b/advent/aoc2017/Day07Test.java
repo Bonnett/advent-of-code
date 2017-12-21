@@ -1,13 +1,14 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day07Test {
 
@@ -29,12 +30,12 @@ public class Day07Test {
 
     @Test
     public void testPart1() {
-        Assert.assertEquals("tknk", Day07.findRootElement(SAMPLE_INPUT));
+        assertEquals("tknk", Day07.findRootElement(SAMPLE_INPUT));
     }
 
     @Test
     public void testPart2() {
-        Assert.assertEquals(60, Day07.balanceTree(SAMPLE_INPUT));
+        assertEquals(60, Day07.balanceTree(SAMPLE_INPUT));
     }
 
     @Test

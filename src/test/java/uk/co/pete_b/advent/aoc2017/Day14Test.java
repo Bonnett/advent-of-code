@@ -1,9 +1,10 @@
 package uk.co.pete_b.advent.aoc2017;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 public class Day14Test {
 
@@ -12,8 +13,8 @@ public class Day14Test {
     @Test
     public void testExamples() {
         final Day14.Answers exampleAnswer = Day14.calculateSquaresUsed("flqrgnkx");
-        Assert.assertEquals(8108, exampleAnswer.getNumberOfSquaresUsed());
-        Assert.assertEquals(1242, exampleAnswer.getNumberOfGroups());
+        assertEquals(8108, exampleAnswer.getNumberOfSquaresUsed());
+        assertEquals(1242, exampleAnswer.getNumberOfGroups());
     }
 
     @Test

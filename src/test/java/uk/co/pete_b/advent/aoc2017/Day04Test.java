@@ -1,7 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,23 +8,27 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+
 public class Day04Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day04Test.class);
 
     @Test
     public void testExamplesPart1() {
-        Assert.assertTrue(Day04.isPassphraseValidPart1("aa bb cc dd ee"));
-        Assert.assertFalse(Day04.isPassphraseValidPart1("aa bb cc dd aa"));
-        Assert.assertTrue(Day04.isPassphraseValidPart1("aa bb cc dd aaa"));
+        assertTrue(Day04.isPassphraseValidPart1("aa bb cc dd ee"));
+        assertFalse(Day04.isPassphraseValidPart1("aa bb cc dd aa"));
+        assertTrue(Day04.isPassphraseValidPart1("aa bb cc dd aaa"));
     }
 
     @Test
     public void testExamplesPart2() {
-        Assert.assertTrue(Day04.isPassphraseValidPart2("abcde fghij"));
-        Assert.assertFalse(Day04.isPassphraseValidPart2("abcde xyz ecdab"));
-        Assert.assertTrue(Day04.isPassphraseValidPart2("a ab abc abd abf abj"));
-        Assert.assertTrue(Day04.isPassphraseValidPart2("iiii oiii ooii oooi oooo"));
-        Assert.assertFalse(Day04.isPassphraseValidPart2("oiii ioii iioi iiio"));
+        assertTrue(Day04.isPassphraseValidPart2("abcde fghij"));
+        assertFalse(Day04.isPassphraseValidPart2("abcde xyz ecdab"));
+        assertTrue(Day04.isPassphraseValidPart2("a ab abc abd abf abj"));
+        assertTrue(Day04.isPassphraseValidPart2("iiii oiii ooii oooi oooo"));
+        assertFalse(Day04.isPassphraseValidPart2("oiii ioii iioi iiio"));
     }
 
     @Test

@@ -20,7 +20,7 @@ public class Day06 {
             int largestIndex = findLargestIndex(blocks);
             int largestValue = blocks[largestIndex];
             blocks[largestIndex] = 0;
-            for (int i=0; i<largestValue; i++) {
+            for (int i = 0; i < largestValue; i++) {
                 int nextIndex = (largestIndex + i + 1) % blocks.length;
                 blocks[nextIndex]++;
             }
@@ -45,7 +45,7 @@ public class Day06 {
             int largestIndex = findLargestIndex(blocks);
             int largestValue = blocks[largestIndex];
             blocks[largestIndex] = 0;
-            for (int i=0; i<largestValue; i++) {
+            for (int i = 0; i < largestValue; i++) {
                 int nextIndex = (largestIndex + i + 1) % blocks.length;
                 blocks[nextIndex]++;
             }
@@ -67,7 +67,7 @@ public class Day06 {
     private static int findLargestIndex(final int[] input) {
         int largestIndex = 0;
         int largest = input[largestIndex];
-        for (int i = 1; i<input.length; i++) {
+        for (int i = 1; i < input.length; i++) {
             if (input[i] > largest) {
                 largest = input[i];
                 largestIndex = i;

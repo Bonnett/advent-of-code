@@ -1,7 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,17 +8,19 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.junit.Assert.assertEquals;
+
 public class Day06Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day06Test.class);
 
     @Test
     public void testPart1() {
-        Assert.assertEquals(5, Day06.numberTillInfiniteLoop("0\t2\t7\t0"));
+        assertEquals(5, Day06.numberTillInfiniteLoop("0\t2\t7\t0"));
     }
 
     @Test
     public void testPart2() {
-        Assert.assertEquals(4, Day06.cyclesFromInfiniteLoop("0\t2\t7\t0"));
+        assertEquals(4, Day06.cyclesFromInfiniteLoop("0\t2\t7\t0"));
     }
 
     @Test
