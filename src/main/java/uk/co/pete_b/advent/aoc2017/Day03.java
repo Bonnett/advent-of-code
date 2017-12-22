@@ -2,15 +2,12 @@ package uk.co.pete_b.advent.aoc2017;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import uk.co.pete_b.advent.Utils.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Day03 {
-
-    private enum Direction {
-        LEFT, UP, RIGHT, DOWN
-    }
 
     private static class CoOrd {
         private final int x;

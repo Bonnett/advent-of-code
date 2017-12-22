@@ -1,5 +1,7 @@
 package uk.co.pete_b.advent.aoc2017;
 
+import uk.co.pete_b.advent.Utils.Direction;
+
 public class Day19 {
 
     public static class Answers {
@@ -18,10 +20,6 @@ public class Day19 {
         public int getNumberOfSteps() {
             return numberOfSteps;
         }
-    }
-
-    private enum Direction {
-        LEFT, UP, RIGHT, DOWN
     }
 
     public static Answers navigatePath(final String input) {
