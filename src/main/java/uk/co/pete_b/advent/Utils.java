@@ -6,7 +6,12 @@ public final class Utils {
     }
 
     public enum Direction {
-        LEFT, UP, RIGHT, DOWN;
+        LEFT("left"), UP("up"), RIGHT("right"), DOWN("down");
+        private final String direction;
+
+        Direction(final String direction) {
+            this.direction = direction;
+        }
 
         Direction left;
         Direction right;
@@ -35,6 +40,16 @@ public final class Utils {
             Direction.LEFT.setLeft(Direction.DOWN);
             Direction.DOWN.setLeft(Direction.RIGHT);
             Direction.RIGHT.setLeft(Direction.UP);
+        }
+
+        public static Direction fromString(final String text) {
+            for (Direction dir : Direction.values()) {
+                if (dir.direction.equalsIgnoreCase(text)) {
+                    return dir;
+                }
+            }
+
+            return null;
         }
     }
 }
