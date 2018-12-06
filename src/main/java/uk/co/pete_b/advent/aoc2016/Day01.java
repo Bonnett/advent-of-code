@@ -1,9 +1,8 @@
 package uk.co.pete_b.advent.aoc2016;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.pete_b.advent.utils.Coordinate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,8 +14,8 @@ public class Day01 {
     private int bearing;
     private int xCoord;
     private int yCoord;
-    private Set<Coords> stepTracing = new LinkedHashSet<>();
-    private Coords firstDuplicate;
+    private Set<Coordinate> stepTracing = new LinkedHashSet<>();
+    private Coordinate firstDuplicate;
 
     public Day01() {
         this.bearing = 0;
@@ -27,7 +26,7 @@ public class Day01 {
     public int[] calculateRoute(String route) {
         String[] steps = route.split(",");
 
-        stepTracing.add(new Coords(xCoord, yCoord));
+        stepTracing.add(new Coordinate(xCoord, yCoord));
         boolean foundDuplicate = false;
 
         for (String step : steps) {
@@ -48,7 +47,7 @@ public class Day01 {
             if (bearing == 0) {
                 int end = (yCoord + distance);
                 for (yCoord++; yCoord < end; yCoord++) {
-                    Coords coords = new Coords(xCoord, yCoord);
+                    Coordinate coords = new Coordinate(xCoord, yCoord);
                     if (!foundDuplicate && stepTracing.contains(coords)) {
                         firstDuplicate = coords;
                         foundDuplicate = true;
@@ -58,7 +57,7 @@ public class Day01 {
             } else if (bearing == 90) {
                 int end = (xCoord + distance);
                 for (xCoord++; xCoord < end; xCoord++) {
-                    Coords coords = new Coords(xCoord, yCoord);
+                    Coordinate coords = new Coordinate(xCoord, yCoord);
                     if (!foundDuplicate && stepTracing.contains(coords)) {
                         firstDuplicate = coords;
                         foundDuplicate = true;
@@ -68,7 +67,7 @@ public class Day01 {
             } else if (bearing == 180) {
                 int end = (yCoord - distance);
                 for (yCoord--; end < yCoord; yCoord--) {
-                    Coords coords = new Coords(xCoord, yCoord);
+                    Coordinate coords = new Coordinate(xCoord, yCoord);
                     if (!foundDuplicate && stepTracing.contains(coords)) {
                         firstDuplicate = coords;
                         foundDuplicate = true;
@@ -79,7 +78,7 @@ public class Day01 {
             } else if (bearing == 270) {
                 int end = (xCoord - distance);
                 for (xCoord--; end < xCoord; xCoord--) {
-                    Coords coords = new Coords(xCoord, yCoord);
+                    Coordinate coords = new Coordinate(xCoord, yCoord);
                     if (!foundDuplicate && stepTracing.contains(coords)) {
                         firstDuplicate = coords;
                         foundDuplicate = true;
@@ -96,38 +95,5 @@ public class Day01 {
 
     public int[] firstDuplicate() {
         return new int[]{firstDuplicate.getX(), firstDuplicate.getY()};
-    }
-
-    static class Coords {
-        private final int x;
-        private final int y;
-
-        public Coords(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        @Override
-        public int hashCode() {
-            return HashCodeBuilder.reflectionHashCode(this, false);
-        }
-
-        @Override
-        public boolean equals(Object otherCoords) {
-            return EqualsBuilder.reflectionEquals(this, otherCoords, false);
-        }
-
-        @Override
-        public String toString() {
-            return "{" + x + "," + y + "}";
-        }
     }
 }

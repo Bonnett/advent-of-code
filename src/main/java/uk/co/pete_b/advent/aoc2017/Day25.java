@@ -1,6 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
-import uk.co.pete_b.advent.Utils.Direction;
+import uk.co.pete_b.advent.utils.Direction;
 
 import java.util.HashMap;
 import java.util.Map;

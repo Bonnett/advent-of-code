@@ -1,6 +1,6 @@
 package uk.co.pete_b.advent.aoc2017;
 
-import uk.co.pete_b.advent.Utils.Direction;
+import uk.co.pete_b.advent.utils.Direction;
 
 public class Day19 {
 
