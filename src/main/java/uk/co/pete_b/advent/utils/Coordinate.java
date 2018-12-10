@@ -4,8 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Coordinate {
-    private final int x;
-    private final int y;
+    protected int x;
+    protected int y;
 
     public Coordinate(int x, int y) {
         this.x = x;
