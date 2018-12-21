@@ -1,14 +1,16 @@
 package uk.co.pete_b.advent.aoc2018;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Day19 {
+public class Day21 {
     private static final Pattern INPUT_PATTERN = Pattern.compile("^([a-z]+) ([0-9]+) ([0-9]+) ([0-9]+)$");
 
-    public static int getRegisterZero(final List<String> input, final int registerZeroStart) {
+    public static int runProgram(final List<String> input, final boolean breakOnFirstCheck) {
         final int startIp = Integer.valueOf(input.get(0).substring(4));
         final List<String> instructions = new ArrayList<>(input.subList(1, input.size()));
 
@@ -27,25 +29,24 @@ public class Day19 {
             }
         }
 
+        final Computer computer = new Computer(startIp, 0, false);
 
-        final Computer computer = new Computer(startIp, registerZeroStart, false);
+        final Set<Integer> possibleExitValues = new HashSet<>();
+        int lastUniqueExitValue = 0;
 
-        while (registerZeroStart != 1 || computer.getInstructionPointer() != 1) {
-            if (computer.getInstructionPointer() >= operations.size()) {
-                break;
+        while (computer.getInstructionPointer() < operations.size()) {
+            // Operation 28 is a check which can cause our program to exit - work out what value it wants
+            if (computer.getInstructionPointer() == 28) {
+                if (breakOnFirstCheck || !possibleExitValues.add(computer.getRegisters()[1])) {
+                    break;
+                } else {
+                    lastUniqueExitValue = computer.getRegisters()[1];
+                }
             }
 
             computer.execute(operations.get(computer.getInstructionPointer()));
         }
 
-        int sumOfDivisors = 0;
-        final int[] registers = computer.getRegisters();
-        for (int i = 1; i <= registers[2]; i++) {
-            if (registers[2] % i == 0) {
-                sumOfDivisors += i;
-            }
-        }
-
-        return (registerZeroStart == 0) ? registers[0] : sumOfDivisors;
+        return breakOnFirstCheck ? computer.getRegisters()[1] : lastUniqueExitValue;
     }
 }
