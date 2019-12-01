@@ -33,7 +33,7 @@ dependencies {
 
 test {
     useJUnitPlatform {
-        excludeTags '2016', '2017', '2018'
+        excludeTags '2016', '2017', '2018', '2019'
     }
 }
 
@@ -52,5 +52,11 @@ task test2017(type: Test) {
 task test2018(type: Test) {
     useJUnitPlatform {
         includeTags '2018'
+    }
+}
+
+task test2019(type: Test) {
+    useJUnitPlatform {
+        includeTags '2019'
     }
 }
