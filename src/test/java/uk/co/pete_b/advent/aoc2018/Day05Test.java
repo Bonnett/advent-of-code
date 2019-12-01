@@ -1,15 +1,17 @@
 package uk.co.pete_b.advent.aoc2018;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("2018")
 public class Day05Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day05Test.class);
 

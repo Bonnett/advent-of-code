@@ -1,7 +1,8 @@
 package uk.co.pete_b.advent.aoc2018;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +11,12 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Tag("2018")
 public class Day07Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day07Test.class);
-    
+
     private static final List<String> TEST_INPUT = Arrays.asList("Step C must be finished before step A can begin.",
             "Step C must be finished before step F can begin.",
             "Step A must be finished before step B can begin.",
@@ -29,8 +31,7 @@ public class Day07Test {
     }
 
     @Test
-    public void testExamplesPart2()
-    {
+    public void testExamplesPart2() {
         assertEquals(15, Day07.getCompletionTime(TEST_INPUT, 0, 2));
     }
 
