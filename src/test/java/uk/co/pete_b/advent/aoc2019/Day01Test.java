@@ -37,7 +37,7 @@ public class Day01Test {
         int totalFuel = moduleMasses.stream().map(mass -> Day01.calculateFuelRequired(Integer.parseInt(mass))).mapToInt(Integer::intValue).sum();
         int totalWithMass = moduleMasses.stream().map(mass -> Day01.calculateFuelRequiredWithFuelMass(Integer.parseInt(mass))).mapToInt(Integer::intValue).sum();
 
-        LOGGER.info("Part 1: " + totalFuel);
-        LOGGER.info("Part 2: " + totalWithMass);
+        LOGGER.info("Part 1: {}", totalFuel);
+        LOGGER.info("Part 2: {}", totalWithMass);
     }
 }
