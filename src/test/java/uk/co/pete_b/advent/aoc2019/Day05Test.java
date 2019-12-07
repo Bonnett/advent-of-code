@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
@@ -17,13 +16,13 @@ public class Day05Test {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day05Test.class);
 
     @Test
-    public void testExamplesPart1() {
+    public void testExamplesPart1() throws Exception {
         assertEquals(1, Day05.getDiagnosticCode(1, new int[]{3, 0, 4, 0, 99}));
         assertEquals(2, Day05.getDiagnosticCode(2, new int[]{3, 0, 4, 0, 99}));
     }
 
     @Test
-    public void testExamplesPart2() {
+    public void testExamplesPart2() throws Exception {
         // Does it equal 8 - position mode
         int[] operations = new int[]{3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8};
         assertEquals(0, Day05.getDiagnosticCode(7, operations));
@@ -71,7 +70,7 @@ public class Day05Test {
     }
 
     @Test
-    public void getAnswers() throws IOException {
+    public void getAnswers() throws Exception {
         final String opCodeList = IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2019/day05"), Charset.defaultCharset());
         final int[] instructions = Arrays.stream(opCodeList.trim().split(",")).mapToInt(Integer::parseInt).toArray();
         LOGGER.info("Part 1: {}", Day05.getDiagnosticCode(1, instructions));
