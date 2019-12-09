@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class Day07 {
-    public static int findMaximumSignal(final int[] operations) {
+    public static long findMaximumSignal(final List<Long> operations) {
         final List<int[]> permutations = calculatePermutations(0, 4);
-        return permutations.parallelStream().mapToInt(p -> calculateSignal(operations, p, false)).max().orElse(-1);
+        return permutations.parallelStream().mapToLong(p -> calculateSignal(operations, p, false)).max().orElse(-1);
     }
 
-    public static int findMaximumSignalWithFeedback(final int[] operations) {
+    public static long findMaximumSignalWithFeedback(final List<Long> operations) {
         final List<int[]> permutations = calculatePermutations(5, 9);
-        return permutations.parallelStream().mapToInt(p -> calculateSignal(operations, p, true)).max().orElse(-1);
+        return permutations.parallelStream().mapToLong(p -> calculateSignal(operations, p, true)).max().orElse(-1);
     }
 
-    private static int calculateSignal(final int[] operations, final int[] input, final boolean withFeedback) {
+    private static long calculateSignal(final List<Long> operations, final int[] input, final boolean withFeedback) {
         try {
-            final List<BlockingQueue<Integer>> queues = new ArrayList<>();
+            final List<BlockingQueue<Long>> queues = new ArrayList<>();
             for (int i = 0; i < 6; i++) {
                 queues.add(new ArrayBlockingQueue<>(2));
             }
@@ -29,11 +29,11 @@ public class Day07 {
 
             final ExecutorService executor = Executors.newFixedThreadPool(5);
             for (int i = 0; i < 5; i++) {
-                queues.get(i).put(input[i]);
+                queues.get(i).put((long) input[i]);
                 executor.execute(new OpCodeComputer(operations, queues.get(i), queues.get(i + 1)));
             }
 
-            queues.get(0).put(0);
+            queues.get(0).put((long) 0);
             executor.shutdown();
             executor.awaitTermination(2L, TimeUnit.SECONDS);
 

@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,24 +20,26 @@ public class Day07Test {
 
     @Test
     public void testExamplesPart1() {
-        assertEquals(43210, Day07.findMaximumSignal(new int[]{3, 15, 3, 16, 1002, 16, 10, 16, 1, 16, 15, 15, 4, 15, 99, 0, 0}));
-        assertEquals(54321, Day07.findMaximumSignal(new int[]{3, 23, 3, 24, 1002, 24, 10, 24, 1002, 23, -1, 23, 101, 5, 23, 23, 1, 24, 23, 23, 4, 23, 99, 0, 0}));
-        assertEquals(65210, Day07.findMaximumSignal(new int[]{3, 31, 3, 32, 1002, 32, 10, 32, 1001, 31, -2, 31, 1007, 31, 0, 33, 1002, 33, 7, 33, 1, 33, 31, 31, 1,
-                32, 31, 31, 4, 31, 99, 0, 0, 0}));
+        assertEquals(43210L, Day07.findMaximumSignal(Arrays.asList(3L, 15L, 3L, 16L, 1002L, 16L, 10L, 16L, 1L, 16L, 15L, 15L, 4L, 15L, 99L, 0L, 0L)));
+        assertEquals(54321L, Day07.findMaximumSignal(Arrays.asList(3L, 23L, 3L, 24L, 1002L, 24L, 10L, 24L, 1002L, 23L, -1L, 23L, 101L, 5L, 23L, 23L, 1L, 24L, 23L, 23L,
+                4L, 23L, 99L, 0L, 0L)));
+        assertEquals(65210L, Day07.findMaximumSignal(Arrays.asList(3L, 31L, 3L, 32L, 1002L, 32L, 10L, 32L, 1001L, 31L, -2L, 31L, 1007L, 31L, 0L, 33L, 1002L, 33L, 7L,
+                33L, 1L, 33L, 31L, 31L, 1L, 32L, 31L, 31L, 4L, 31L, 99L, 0L, 0L, 0L)));
     }
 
     @Test
     public void testExamplesPart2() {
-        assertEquals(139629729, Day07.findMaximumSignalWithFeedback(new int[]{3, 26, 1001, 26, -4, 26, 3, 27, 1002, 27, 2, 27, 1, 27, 26, 27, 4, 27, 1001, 28, -1,
-                28, 1005, 28, 6, 99, 0, 0, 5}));
-        assertEquals(18216, Day07.findMaximumSignalWithFeedback(new int[]{3, 52, 1001, 52, -5, 52, 3, 53, 1, 52, 56, 54, 1007, 54, 5, 55, 1005, 55, 26, 1001, 54, -5,
-                54, 1105, 1, 12, 1, 53, 54, 53, 1008, 54, 0, 55, 1001, 55, 1, 55, 2, 53, 55, 53, 4, 53, 1001, 56, -1, 56, 1005, 56, 6, 99, 0, 0, 0, 0, 10}));
+        assertEquals(139629729L, Day07.findMaximumSignalWithFeedback(Arrays.asList(3L, 26L, 1001L, 26L, -4L, 26L, 3L, 27L, 1002L, 27L, 2L, 27L, 1L, 27L, 26L, 27L, 4L,
+                27L, 1001L, 28L, -1L, 28L, 1005L, 28L, 6L, 99L, 0L, 0L, 5L)));
+        assertEquals(18216L, Day07.findMaximumSignalWithFeedback(Arrays.asList(3L, 52L, 1001L, 52L, -5L, 52L, 3L, 53L, 1L, 52L, 56L, 54L, 1007L, 54L, 5L, 55L, 1005L,
+                55L, 26L, 1001L, 54L, -5L, 54L, 1105L, 1L, 12L, 1L, 53L, 54L, 53L, 1008L, 54L, 0L, 55L, 1001L, 55L, 1L, 55L, 2L, 53L, 55L, 53L, 4L, 53L, 1001L, 56L, -1L, 56L,
+                1005L, 56L, 6L, 99L, 0L, 0L, 0L, 0L, 10L)));
     }
 
     @Test
     public void getAnswers() throws IOException {
         final String opCodeList = IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2019/day07"), Charset.defaultCharset());
-        final int[] instructions = Arrays.stream(opCodeList.trim().split(",")).mapToInt(Integer::parseInt).toArray();
+        final List<Long> instructions = Arrays.stream(opCodeList.trim().split(",")).map(Long::parseLong).collect(Collectors.toList());
         LOGGER.info("Part 1: {}", Day07.findMaximumSignal(instructions));
         LOGGER.info("Part 2: {}", Day07.findMaximumSignalWithFeedback(instructions));
     }

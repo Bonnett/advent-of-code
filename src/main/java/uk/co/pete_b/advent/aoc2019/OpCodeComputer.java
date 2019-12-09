@@ -1,60 +1,61 @@
 package uk.co.pete_b.advent.aoc2019;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class OpCodeComputer implements Runnable {
 
-    private final int[] state;
+    private final List<Long> state;
     private int currentPos = 0;
-    private final BlockingQueue<Integer> inputQueue;
-    private final BlockingQueue<Integer> outputQueue;
+    private long relativeBase = 0;
+    private final BlockingQueue<Long> inputQueue;
+    private final BlockingQueue<Long> outputQueue;
 
-    public OpCodeComputer(final int[] operations, final BlockingQueue<Integer> inputQueue, final BlockingQueue<Integer> outputQueue)
-    {
-        this.state = operations.clone();
+    public OpCodeComputer(final List<Long> operations, final BlockingQueue<Long> inputQueue, final BlockingQueue<Long> outputQueue) {
+        this.state = new ArrayList<>(operations);
         this.inputQueue = inputQueue;
         this.outputQueue = outputQueue;
     }
 
     public void run() {
         try {
-            final DecimalFormat FORMAT = new DecimalFormat("0000");
+            final DecimalFormat format = new DecimalFormat("00000");
             boolean shouldQuit = false;
-            while (!shouldQuit && this.currentPos < this.state.length - 1) {
-                final String instruction = FORMAT.format(this.state[this.currentPos]);
-                final String opCode = instruction.substring(2);
+            while (!shouldQuit && this.currentPos < this.state.size() - 1) {
+                final String instruction = format.format(safeGet(this.currentPos));
+                final String opCode = instruction.substring(3);
                 switch (opCode) {
                     case "01":
                     case "02": {
-                        final int valueA = instruction.charAt(1) == '0' ? this.state[this.state[this.currentPos + 1]] : this.state[this.currentPos + 1];
-                        final int valueB = instruction.charAt(0) == '0' ? this.state[this.state[this.currentPos + 2]] : this.state[this.currentPos + 2];
-                        final int target = this.state[this.currentPos + 3];
+                        final long valueA = getValue(instruction, 2, 1);
+                        final long valueB = getValue(instruction, 1, 2);
+                        final long target = getAddress(instruction, 0, 3);
                         if (opCode.equalsIgnoreCase("01")) {
-                            this.state[target] = valueA + valueB;
+                            safeSet(target, valueA + valueB);
                         } else {
-                            this.state[target] = valueA * valueB;
+                            safeSet(target, valueA * valueB);
                         }
                         this.currentPos += 4;
                         break;
                     }
                     case "03": {
-                        final int valueA = this.state[this.currentPos + 1];
-                        this.state[valueA] = this.inputQueue.take();
+                        safeSet(getAddress(instruction, 2, 1), this.inputQueue.take());
                         this.currentPos += 2;
                         break;
                     }
                     case "04": {
-                        this.outputQueue.put(instruction.charAt(1) == '0' ? this.state[this.state[this.currentPos + 1]] : this.state[this.currentPos + 1]);
+                        this.outputQueue.put(getValue(instruction, 2, 1));
                         this.currentPos += 2;
                         break;
                     }
                     case "05":
                     case "06": {
-                        final int valueA = instruction.charAt(1) == '0' ? this.state[this.state[this.currentPos + 1]] : this.state[this.currentPos + 1];
-                        final int valueB = instruction.charAt(0) == '0' ? this.state[this.state[this.currentPos + 2]] : this.state[this.currentPos + 2];
+                        final long valueA = getValue(instruction, 2, 1);
+                        final long valueB = getValue(instruction, 1, 2);
                         if ((opCode.equalsIgnoreCase("05")) == (valueA != 0)) {
-                            this.currentPos = valueB;
+                            this.currentPos = (int) valueB;
                         } else {
                             this.currentPos += 3;
                         }
@@ -62,16 +63,21 @@ public class OpCodeComputer implements Runnable {
                     }
                     case "07":
                     case "08": {
-                        final int valueA = instruction.charAt(1) == '0' ? this.state[this.state[this.currentPos + 1]] : this.state[this.currentPos + 1];
-                        final int valueB = instruction.charAt(0) == '0' ? this.state[this.state[this.currentPos + 2]] : this.state[this.currentPos + 2];
-                        final int target = this.state[this.currentPos + 3];
+                        final long valueA = getValue(instruction, 2, 1);
+                        final long valueB = getValue(instruction, 1, 2);
+                        final long target = getAddress(instruction, 0, 3);
                         final boolean shouldOperate = (opCode.equalsIgnoreCase("07")) ? valueA < valueB : valueA == valueB;
                         if (shouldOperate) {
-                            this.state[target] = 1;
+                            safeSet(target, 1L);
                         } else {
-                            this.state[target] = 0;
+                            safeSet(target, 0L);
                         }
                         this.currentPos += 4;
+                        break;
+                    }
+                    case "09": {
+                        this.relativeBase += getValue(instruction, 2, 1);
+                        this.currentPos += 2;
                         break;
                     }
                     case "99":
@@ -81,10 +87,50 @@ public class OpCodeComputer implements Runnable {
                         throw new IllegalStateException("Something's wrong");
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private long getValue(final String instruction, final int charPos, final int stateOffset) {
+        switch (instruction.charAt(charPos)) {
+            case '0':
+                return safeGet((int) safeGet(this.currentPos + stateOffset));
+            case '1':
+                return safeGet(this.currentPos + stateOffset);
+            case '2':
+                return safeGet((int) this.relativeBase + (int) safeGet(this.currentPos + stateOffset));
+            default:
+                throw new IllegalStateException("Something's wrong");
+        }
+    }
+
+    private int getAddress(final String instruction, final int charPos, final int stateOffset) {
+        switch (instruction.charAt(charPos)) {
+            case '0':
+                return (int) safeGet(this.currentPos + stateOffset);
+            case '2':
+                return (int) (this.relativeBase + safeGet(this.currentPos + stateOffset));
+            default:
+                throw new IllegalStateException("Something's wrong");
+        }
+    }
+
+    private long safeGet(final long index) {
+        prepopulate(index);
+        return this.state.get((int) index);
+    }
+
+    private void safeSet(final long index, final long value) {
+        prepopulate(index);
+        this.state.set((int) index, value);
+    }
+
+    private void prepopulate(final long index) {
+        if (index >= this.state.size()) {
+            while (index >= this.state.size()) {
+                this.state.add(0L);
+            }
         }
     }
 }

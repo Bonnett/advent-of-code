@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,63 +19,63 @@ public class Day05Test {
 
     @Test
     public void testExamplesPart1() throws Exception {
-        assertEquals(1, Day05.getDiagnosticCode(1, new int[]{3, 0, 4, 0, 99}));
-        assertEquals(2, Day05.getDiagnosticCode(2, new int[]{3, 0, 4, 0, 99}));
+        assertEquals(1L, Day05.getDiagnosticCode(1, Arrays.asList(3L, 0L, 4L, 0L, 99L)));
+        assertEquals(2L, Day05.getDiagnosticCode(2, Arrays.asList(3L, 0L, 4L, 0L, 99L)));
     }
 
     @Test
     public void testExamplesPart2() throws Exception {
         // Does it equal 8 - position mode
-        int[] operations = new int[]{3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8};
-        assertEquals(0, Day05.getDiagnosticCode(7, operations));
-        assertEquals(1, Day05.getDiagnosticCode(8, operations));
-        assertEquals(0, Day05.getDiagnosticCode(9, operations));
+        List<Long> operations = Arrays.asList(3L, 9L, 8L, 9L, 10L, 9L, 4L, 9L, 99L, -1L, 8L);
+        assertEquals(0L, Day05.getDiagnosticCode(7L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(8L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(9L, operations));
 
         // Does it equal 8 - immediate mode
-        operations = new int[]{3, 3, 1108, -1, 8, 3, 4, 3, 99};
-        assertEquals(0, Day05.getDiagnosticCode(7, operations));
-        assertEquals(1, Day05.getDiagnosticCode(8, operations));
-        assertEquals(0, Day05.getDiagnosticCode(9, operations));
+        operations = Arrays.asList(3L, 3L, 1108L, -1L, 8L, 3L, 4L, 3L, 99L);
+        assertEquals(0L, Day05.getDiagnosticCode(7L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(8L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(9L, operations));
 
         // Is it less than 8 - position mode
-        operations = new int[]{3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8};
-        assertEquals(1, Day05.getDiagnosticCode(6, operations));
-        assertEquals(1, Day05.getDiagnosticCode(7, operations));
-        assertEquals(0, Day05.getDiagnosticCode(8, operations));
-        assertEquals(0, Day05.getDiagnosticCode(9, operations));
+        operations = Arrays.asList(3L, 9L, 7L, 9L, 10L, 9L, 4L, 9L, 99L, -1L, 8L);
+        assertEquals(1L, Day05.getDiagnosticCode(6L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(7L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(8L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(9L, operations));
 
         // Is it less than 8 - immediate mode
-        operations = new int[]{3, 3, 1107, -1, 8, 3, 4, 3, 99};
-        assertEquals(1, Day05.getDiagnosticCode(6, operations));
-        assertEquals(1, Day05.getDiagnosticCode(7, operations));
-        assertEquals(0, Day05.getDiagnosticCode(8, operations));
-        assertEquals(0, Day05.getDiagnosticCode(9, operations));
+        operations = Arrays.asList(3L, 3L, 1107L, -1L, 8L, 3L, 4L, 3L, 99L);
+        assertEquals(1L, Day05.getDiagnosticCode(6L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(7L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(8L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(9L, operations));
 
         // Is it 0 - position mode
-        operations = new int[]{3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9};
-        assertEquals(1, Day05.getDiagnosticCode(-1, operations));
-        assertEquals(0, Day05.getDiagnosticCode(0, operations));
-        assertEquals(1, Day05.getDiagnosticCode(1, operations));
+        operations = Arrays.asList(3L, 12L, 6L, 12L, 15L, 1L, 13L, 14L, 13L, 4L, 13L, 99L, -1L, 0L, 1L, 9L);
+        assertEquals(1L, Day05.getDiagnosticCode(-1L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(0L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(1L, operations));
 
         // Is it 0 - immediate mode
-        operations = new int[]{3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1};
-        assertEquals(1, Day05.getDiagnosticCode(-1, operations));
-        assertEquals(0, Day05.getDiagnosticCode(0, operations));
-        assertEquals(1, Day05.getDiagnosticCode(1, operations));
+        operations = Arrays.asList(3L, 3L, 1105L, -1L, 9L, 1101L, 0L, 0L, 12L, 4L, 12L, 99L, 1L);
+        assertEquals(1L, Day05.getDiagnosticCode(-1L, operations));
+        assertEquals(0L, Day05.getDiagnosticCode(0L, operations));
+        assertEquals(1L, Day05.getDiagnosticCode(1L, operations));
 
         // 999 if < 8, 1000 if == 8, 1001 if > 8
-        operations = new int[]{3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999,
-                1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99};
-        assertEquals(999, Day05.getDiagnosticCode(7, operations));
-        assertEquals(1000, Day05.getDiagnosticCode(8, operations));
-        assertEquals(1001, Day05.getDiagnosticCode(9, operations));
+        operations = Arrays.asList(3L, 21L, 1008L, 21L, 8L, 20L, 1005L, 20L, 22L, 107L, 8L, 21L, 20L, 1006L, 20L, 31L, 1106L, 0L, 36L, 98L, 0L, 0L, 1002L, 21L, 125L, 20L, 4L, 20L,
+                1105L, 1L, 46L, 104L, 999L, 1105L, 1L, 46L, 1101L, 1000L, 1L, 20L, 4L, 20L, 1105L, 1L, 46L, 98L, 99L);
+        assertEquals(999L, Day05.getDiagnosticCode(7L, operations));
+        assertEquals(1000L, Day05.getDiagnosticCode(8L, operations));
+        assertEquals(1001L, Day05.getDiagnosticCode(9L, operations));
     }
 
     @Test
     public void getAnswers() throws Exception {
         final String opCodeList = IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2019/day05"), Charset.defaultCharset());
-        final int[] instructions = Arrays.stream(opCodeList.trim().split(",")).mapToInt(Integer::parseInt).toArray();
-        LOGGER.info("Part 1: {}", Day05.getDiagnosticCode(1, instructions));
-        LOGGER.info("Part 2: {}", Day05.getDiagnosticCode(5, instructions));
+        final List<Long> instructions = Arrays.stream(opCodeList.trim().split(",")).map(Long::parseLong).collect(Collectors.toList());
+        LOGGER.info("Part 1: {}", Day05.getDiagnosticCode(1L, instructions));
+        LOGGER.info("Part 2: {}", Day05.getDiagnosticCode(5L, instructions));
     }
 }
