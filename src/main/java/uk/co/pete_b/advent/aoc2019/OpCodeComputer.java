@@ -12,6 +12,7 @@ public class OpCodeComputer implements Runnable {
     private long relativeBase = 0;
     private final BlockingQueue<Long> inputQueue;
     private final BlockingQueue<Long> outputQueue;
+    private boolean finishedExecution = false;
 
     public OpCodeComputer(final List<Long> operations, final BlockingQueue<Long> inputQueue, final BlockingQueue<Long> outputQueue) {
         this.state = new ArrayList<>(operations);
@@ -22,8 +23,7 @@ public class OpCodeComputer implements Runnable {
     public void run() {
         try {
             final DecimalFormat format = new DecimalFormat("00000");
-            boolean shouldQuit = false;
-            while (!shouldQuit && this.currentPos < this.state.size() - 1) {
+            while (!this.finishedExecution && this.currentPos < this.state.size() - 1) {
                 final String instruction = format.format(safeGet(this.currentPos));
                 final String opCode = instruction.substring(3);
                 switch (opCode) {
@@ -81,7 +81,7 @@ public class OpCodeComputer implements Runnable {
                         break;
                     }
                     case "99":
-                        shouldQuit = true;
+                        this.finishedExecution = true;
                         break;
                     default:
                         throw new IllegalStateException("Something's wrong");
@@ -90,6 +90,18 @@ public class OpCodeComputer implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public BlockingQueue<Long> getInputQueue() {
+        return inputQueue;
+    }
+
+    public BlockingQueue<Long> getOutputQueue() {
+        return outputQueue;
+    }
+
+    public boolean hasFinishedExecution() {
+        return this.finishedExecution;
     }
 
     private long getValue(final String instruction, final int charPos, final int stateOffset) {
