@@ -3,9 +3,9 @@ package uk.co.pete_b.advent.utils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class Coordinate3D {
-    protected final int x;
-    protected final int y;
-    protected final int z;
+    protected int x;
+    protected int y;
+    protected int z;
 
     public Coordinate3D(final int x, final int y, final int z) {
         this.x = x;
@@ -25,6 +25,18 @@ public class Coordinate3D {
         return this.z;
     }
 
+    public void move(final int x, final int y, final int z) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+    }
+
+    public void move(final Coordinate3D movement) {
+        this.x += movement.x;
+        this.y += movement.y;
+        this.z += movement.z;
+    }
+
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this, false);
@@ -42,6 +54,6 @@ public class Coordinate3D {
 
     @Override
     public String toString() {
-        return String.format("[%d, %d, %d]", x, y, z);
+        return String.format("[x=%3d, y=%3d, z=%3d]", x, y, z);
     }
 }
