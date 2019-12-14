@@ -29,18 +29,23 @@ public class Day07 {
 
             final ExecutorService executor = Executors.newFixedThreadPool(5);
             for (int i = 0; i < 5; i++) {
-                queues.get(i).put((long) input[i]);
-                executor.execute(new OpCodeComputer(operations, queues.get(i), queues.get(i + 1)));
+                final int index = i;
+                queues.get(i).add((long) input[i]);
+                executor.execute(new OpCodeComputer(operations, () -> {
+                    try {
+                        return queues.get(index).take();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, (value) -> queues.get(index + 1).add(value)));
             }
 
-            queues.get(0).put((long) 0);
+            queues.get(0).add((long) 0);
             executor.shutdown();
             executor.awaitTermination(2L, TimeUnit.SECONDS);
 
             return queues.get(queues.size() - 1).take();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

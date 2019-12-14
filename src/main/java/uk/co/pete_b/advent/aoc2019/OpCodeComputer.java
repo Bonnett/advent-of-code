@@ -3,27 +3,27 @@ package uk.co.pete_b.advent.aoc2019;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class OpCodeComputer implements Runnable {
-
+public class OpCodeComputer extends Thread {
     private final List<Long> state;
     private int currentPos = 0;
     private long relativeBase = 0;
-    private final BlockingQueue<Long> inputQueue;
-    private final BlockingQueue<Long> outputQueue;
-    private boolean finishedExecution = false;
+    private final Supplier<Long> input;
+    private final Consumer<Long> output;
 
-    public OpCodeComputer(final List<Long> operations, final BlockingQueue<Long> inputQueue, final BlockingQueue<Long> outputQueue) {
+    public OpCodeComputer(final List<Long> operations, final Supplier<Long> input, final Consumer<Long> output) {
         this.state = new ArrayList<>(operations);
-        this.inputQueue = inputQueue;
-        this.outputQueue = outputQueue;
+        this.input = input;
+        this.output = output;
     }
 
     public void run() {
         try {
             final DecimalFormat format = new DecimalFormat("00000");
-            while (!this.finishedExecution && this.currentPos < this.state.size() - 1) {
+            boolean keepRunning = true;
+            while (keepRunning && this.currentPos < this.state.size() - 1) {
                 final String instruction = format.format(safeGet(this.currentPos));
                 final String opCode = instruction.substring(3);
                 switch (opCode) {
@@ -41,12 +41,12 @@ public class OpCodeComputer implements Runnable {
                         break;
                     }
                     case "03": {
-                        safeSet(getAddress(instruction, 2, 1), this.inputQueue.take());
+                        safeSet(getAddress(instruction, 2, 1), this.input.get());
                         this.currentPos += 2;
                         break;
                     }
                     case "04": {
-                        this.outputQueue.put(getValue(instruction, 2, 1));
+                        this.output.accept(getValue(instruction, 2, 1));
                         this.currentPos += 2;
                         break;
                     }
@@ -81,7 +81,7 @@ public class OpCodeComputer implements Runnable {
                         break;
                     }
                     case "99":
-                        this.finishedExecution = true;
+                        keepRunning = false;
                         break;
                     default:
                         throw new IllegalStateException("Something's wrong");
@@ -90,18 +90,6 @@ public class OpCodeComputer implements Runnable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public BlockingQueue<Long> getInputQueue() {
-        return inputQueue;
-    }
-
-    public BlockingQueue<Long> getOutputQueue() {
-        return outputQueue;
-    }
-
-    public boolean hasFinishedExecution() {
-        return this.finishedExecution;
     }
 
     private long getValue(final String instruction, final int charPos, final int stateOffset) {
