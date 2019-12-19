@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class OpCodeComputer extends Thread {
+public class OpCodeComputer implements Runnable {
     private final List<Long> state;
     private int currentPos = 0;
     private long relativeBase = 0;
@@ -19,6 +19,7 @@ public class OpCodeComputer extends Thread {
         this.output = output;
     }
 
+    @Override
     public void run() {
         try {
             final DecimalFormat format = new DecimalFormat("00000");

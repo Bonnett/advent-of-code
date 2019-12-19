@@ -6,6 +6,10 @@ import uk.co.pete_b.advent.utils.Coordinate;
 import uk.co.pete_b.advent.utils.Direction;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Day17 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day17.class);
@@ -22,8 +26,9 @@ public class Day17 {
     public static int calculateAlignmentParameter(final List<Long> operations) throws InterruptedException {
         final AsciiRobot robot = new AsciiRobot();
         final OpCodeComputer computer = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
-        computer.start();
-        computer.join();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(computer);
+        executor.awaitTermination(1L, TimeUnit.MINUTES);
 
         return calculateAlignmentParameter(robot.getView());
     }
@@ -152,8 +157,11 @@ public class Day17 {
     public static long howMuchDust(final List<Long> operations) throws InterruptedException {
         final AsciiRobot robot = new AsciiRobot();
         final OpCodeComputer initialRun = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
-        initialRun.start();
-        initialRun.join();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(initialRun);
+        executor.shutdown();
+        executor.awaitTermination(2L, TimeUnit.SECONDS);
+
         final String route = calculateRoute(robot.getView());
         robot.reset();
 
@@ -170,9 +178,12 @@ public class Day17 {
 
         robot.setSolvingOperations(mainRoutine, functionA, functionB, functionC);
         operations.set(0, 2L);
+
+        executor = Executors.newSingleThreadExecutor();
         final OpCodeComputer mazeSolver = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
-        mazeSolver.start();
-        mazeSolver.join();
+        executor.execute(mazeSolver);
+        executor.shutdown();
+        executor.awaitTermination(2L, TimeUnit.SECONDS);
 
         return robot.getDustCollected();
     }

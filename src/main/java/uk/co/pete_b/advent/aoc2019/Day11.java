@@ -4,13 +4,15 @@ import uk.co.pete_b.advent.utils.Coordinate;
 import uk.co.pete_b.advent.utils.Direction;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Day11 {
-    public static Map<Coordinate, Long> startPainting(final Long startingColour, final List<Long> operations) throws Exception {
+    public static Map<Coordinate, Long> startPainting(final Long startingColour, final List<Long> operations) {
         final PaintingRobot robot = new PaintingRobot(startingColour);
         final OpCodeComputer computer = new OpCodeComputer(operations, robot::changeDirection, robot::updatePosition);
-        computer.start();
-        computer.join();
+        final Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(computer);
 
         return robot.getPaintedSquares();
     }

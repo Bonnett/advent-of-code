@@ -4,6 +4,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import uk.co.pete_b.advent.utils.Coordinate;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Day15 {
 
@@ -102,9 +105,11 @@ public class Day15 {
                 this.currentRoute = this.possibleRoutes.pop();
                 this.shouldExit = false;
                 this.currentIndex = 0;
+                final ExecutorService executor = Executors.newSingleThreadExecutor();
                 final OpCodeComputer computer = new OpCodeComputer(this.operations, this::moveRobot, this::reportMoveStatus);
-                computer.start();
-                computer.join();
+                executor.execute(computer);
+                executor.shutdown();
+                executor.awaitTermination(2L, TimeUnit.SECONDS);
             }
         }
 

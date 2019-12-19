@@ -3,6 +3,8 @@ package uk.co.pete_b.advent.aoc2019;
 import uk.co.pete_b.advent.utils.Coordinate;
 
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Day13 {
     public static long countBlocks(final List<Long> operations) throws Exception {
@@ -16,11 +18,11 @@ public class Day13 {
         return cabinet.getCurrentScore();
     }
 
-    private static ArcadeCabinet runArcadeCabinet(final List<Long> operations) throws Exception {
+    private static ArcadeCabinet runArcadeCabinet(final List<Long> operations) {
         final ArcadeCabinet cabinet = new ArcadeCabinet();
         final OpCodeComputer computer = new OpCodeComputer(operations, cabinet::moveJoystick, cabinet::drawScreen);
-        computer.start();
-        computer.join();
+        final Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(computer);
 
         return cabinet;
     }
