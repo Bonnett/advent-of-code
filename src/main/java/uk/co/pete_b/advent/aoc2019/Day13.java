@@ -19,7 +19,7 @@ public class Day13 {
 
     private static ArcadeCabinet runArcadeCabinet(final List<Long> operations) throws Exception {
         final ArcadeCabinet cabinet = new ArcadeCabinet();
-        final OpCodeComputer computer = new OpCodeComputer(operations, cabinet::moveJoystick, cabinet::drawScreen);
+        final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(operations, cabinet::moveJoystick, cabinet::drawScreen);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
         executor.shutdown();

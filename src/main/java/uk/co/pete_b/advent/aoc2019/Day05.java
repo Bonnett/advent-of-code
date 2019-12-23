@@ -10,7 +10,7 @@ public class Day05 {
 
     public static long getDiagnosticCode(final long input, final List<Long> operations) throws InterruptedException {
         final List<Long> outputBuffer = new ArrayList<>();
-        final OpCodeComputer computer = new OpCodeComputer(operations, () -> input, outputBuffer::add);
+        final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(operations, () -> input, outputBuffer::add);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
         executor.shutdown();

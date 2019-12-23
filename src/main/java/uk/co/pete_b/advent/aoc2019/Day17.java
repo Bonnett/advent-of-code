@@ -6,7 +6,6 @@ import uk.co.pete_b.advent.utils.Coordinate;
 import uk.co.pete_b.advent.utils.Direction;
 
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +24,7 @@ public class Day17 {
 
     public static int calculateAlignmentParameter(final List<Long> operations) throws InterruptedException {
         final AsciiRobot robot = new AsciiRobot();
-        final OpCodeComputer computer = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
+        final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
         executor.shutdown();
@@ -157,7 +156,7 @@ public class Day17 {
 
     public static long howMuchDust(final List<Long> operations) throws InterruptedException {
         final AsciiRobot robot = new AsciiRobot();
-        final OpCodeComputer initialRun = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
+        final ConsumerSupplierOpCodeComputer initialRun = new ConsumerSupplierOpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(initialRun);
         executor.shutdown();
@@ -181,7 +180,7 @@ public class Day17 {
         operations.set(0, 2L);
 
         executor = Executors.newSingleThreadExecutor();
-        final OpCodeComputer mazeSolver = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
+        final ConsumerSupplierOpCodeComputer mazeSolver = new ConsumerSupplierOpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
         executor.execute(mazeSolver);
         executor.shutdown();
         executor.awaitTermination(2L, TimeUnit.SECONDS);

@@ -106,7 +106,7 @@ public class Day15 {
                 this.shouldExit = false;
                 this.currentIndex = 0;
                 final ExecutorService executor = Executors.newSingleThreadExecutor();
-                final OpCodeComputer computer = new OpCodeComputer(this.operations, this::moveRobot, this::reportMoveStatus);
+                final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(this.operations, this::moveRobot, this::reportMoveStatus);
                 executor.execute(computer);
                 executor.shutdown();
                 executor.awaitTermination(2L, TimeUnit.SECONDS);

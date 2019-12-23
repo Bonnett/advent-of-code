@@ -37,7 +37,7 @@ public class Day19 {
         for (int y = startY; y < width; y++) {
             for (int x = startX; x < height; x++) {
                 final Drone drone = new Drone(targetMap, new Coordinate(x, y));
-                final OpCodeComputer computer = new OpCodeComputer(operations, drone::move, drone::getFeedback);
+                final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(operations, drone::move, drone::getFeedback);
                 executor.submit(computer);
             }
         }

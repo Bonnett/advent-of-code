@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class Day09 {
     public static List<Long> getBoostKeyCode(final long input, final List<Long> operations) throws InterruptedException {
         final List<Long> outputBuffer = new ArrayList<>();
-        final OpCodeComputer computer = new OpCodeComputer(operations, () -> input, outputBuffer::add);
+        final ConsumerSupplierOpCodeComputer computer = new ConsumerSupplierOpCodeComputer(operations, () -> input, outputBuffer::add);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
         executor.shutdown();

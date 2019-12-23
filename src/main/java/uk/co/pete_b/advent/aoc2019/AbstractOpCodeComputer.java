@@ -3,28 +3,22 @@ package uk.co.pete_b.advent.aoc2019;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-public class OpCodeComputer implements Runnable {
+public abstract class AbstractOpCodeComputer implements Runnable {
+    public AbstractOpCodeComputer(final List<Long> operations) {
+        this.state = new ArrayList<>(operations);
+    }
+
     private final List<Long> state;
     private int currentPos = 0;
     private long relativeBase = 0;
-    private final Supplier<Long> input;
-    private final Consumer<Long> output;
-
-    public OpCodeComputer(final List<Long> operations, final Supplier<Long> input, final Consumer<Long> output) {
-        this.state = new ArrayList<>(operations);
-        this.input = input;
-        this.output = output;
-    }
+    private boolean keepRunning = true;
 
     @Override
     public void run() {
         try {
             final DecimalFormat format = new DecimalFormat("00000");
-            boolean keepRunning = true;
-            while (keepRunning && this.currentPos < this.state.size() - 1) {
+            while (this.keepRunning && this.currentPos < this.state.size() - 1) {
                 final String instruction = format.format(safeGet(this.currentPos));
                 final String opCode = instruction.substring(3);
                 switch (opCode) {
@@ -42,12 +36,12 @@ public class OpCodeComputer implements Runnable {
                         break;
                     }
                     case "03": {
-                        safeSet(getAddress(instruction, 2, 1), this.input.get());
+                        safeSet(getAddress(instruction, 2, 1), getInputValue());
                         this.currentPos += 2;
                         break;
                     }
                     case "04": {
-                        this.output.accept(getValue(instruction, 2, 1));
+                        setOutputValue(getValue(instruction, 2, 1));
                         this.currentPos += 2;
                         break;
                     }
@@ -82,13 +76,14 @@ public class OpCodeComputer implements Runnable {
                         break;
                     }
                     case "99":
-                        keepRunning = false;
+                        this.keepRunning = false;
                         break;
                     default:
                         throw new IllegalStateException("Something's wrong");
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -134,4 +129,12 @@ public class OpCodeComputer implements Runnable {
             }
         }
     }
+
+    public void forceQuit() {
+        this.keepRunning = false;
+    }
+
+    public abstract Long getInputValue() throws Exception;
+
+    public abstract void setOutputValue(final Long value) throws Exception;
 }

@@ -31,7 +31,7 @@ public class Day07 {
             for (int i = 0; i < 5; i++) {
                 final int index = i;
                 queues.get(i).add((long) input[i]);
-                executor.execute(new OpCodeComputer(operations, () -> {
+                executor.execute(new ConsumerSupplierOpCodeComputer(operations, () -> {
                     try {
                         return queues.get(index).take();
                     } catch (InterruptedException e) {
