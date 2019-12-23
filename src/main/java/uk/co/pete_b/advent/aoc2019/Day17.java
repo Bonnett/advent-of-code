@@ -28,6 +28,7 @@ public class Day17 {
         final OpCodeComputer computer = new OpCodeComputer(operations, robot::moveRobot, robot::drawScreen);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
+        executor.shutdown();
         executor.awaitTermination(1L, TimeUnit.MINUTES);
 
         return calculateAlignmentParameter(robot.getView());

@@ -5,14 +5,18 @@ import uk.co.pete_b.advent.utils.Direction;
 
 import java.util.*;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Day11 {
-    public static Map<Coordinate, Long> startPainting(final Long startingColour, final List<Long> operations) {
+    public static Map<Coordinate, Long> startPainting(final Long startingColour, final List<Long> operations)  throws Exception {
         final PaintingRobot robot = new PaintingRobot(startingColour);
         final OpCodeComputer computer = new OpCodeComputer(operations, robot::changeDirection, robot::updatePosition);
-        final Executor executor = Executors.newSingleThreadExecutor();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
+        executor.shutdown();
+        executor.awaitTermination(1L, TimeUnit.MINUTES);
 
         return robot.getPaintedSquares();
     }

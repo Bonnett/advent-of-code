@@ -36,7 +36,7 @@ public class Day11Test {
                 if (cell == 0) {
                     paintedWall.append(' ');
                 } else {
-                    paintedWall.append('#');
+                    paintedWall.append('■');
                 }
             }
             paintedWall.append("\r\n");

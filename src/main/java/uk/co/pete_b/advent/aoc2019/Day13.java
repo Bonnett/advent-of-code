@@ -3,8 +3,7 @@ package uk.co.pete_b.advent.aoc2019;
 import uk.co.pete_b.advent.utils.Coordinate;
 
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class Day13 {
     public static long countBlocks(final List<Long> operations) throws Exception {
@@ -18,18 +17,20 @@ public class Day13 {
         return cabinet.getCurrentScore();
     }
 
-    private static ArcadeCabinet runArcadeCabinet(final List<Long> operations) {
+    private static ArcadeCabinet runArcadeCabinet(final List<Long> operations) throws Exception {
         final ArcadeCabinet cabinet = new ArcadeCabinet();
         final OpCodeComputer computer = new OpCodeComputer(operations, cabinet::moveJoystick, cabinet::drawScreen);
-        final Executor executor = Executors.newSingleThreadExecutor();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(computer);
+        executor.shutdown();
+        executor.awaitTermination(1L, TimeUnit.MINUTES);
 
         return cabinet;
     }
 
     private static class ArcadeCabinet {
         private final Queue<Long> inputBuffer = new ArrayDeque<>();
-        private final Map<Coordinate, Integer> gameTiles = new HashMap<>();
+        private final Map<Coordinate, Integer> gameTiles = new ConcurrentHashMap<>();
 
         private int currentBallPosition = 0;
         private int currentPaddlePosition = 0;
