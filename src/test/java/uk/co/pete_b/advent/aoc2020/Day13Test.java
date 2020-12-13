@@ -27,12 +27,19 @@ public class Day13Test {
 
     @Test
     public void testExamplesPart2() {
-        assertEquals(1068781, Day13.findContiguousBus(EXAMPLE_INPUT, 1000000L));
-        assertEquals(3417, Day13.findContiguousBus("17,x,13,19", 3000L));
-        assertEquals(754018, Day13.findContiguousBus("67,7,59,61", 700000L));
-        assertEquals(779210, Day13.findContiguousBus("67,x,7,59,61", 700000L));
-        assertEquals(1261476, Day13.findContiguousBus("67,7,x,59,61", 1000000L));
-        assertEquals(1202161486, Day13.findContiguousBus("1789,37,47,1889", 1000000000L));
+        assertEquals(1068781, Day13.findContiguousBusInefficiently(EXAMPLE_INPUT, 1000000L));
+        assertEquals(3417, Day13.findContiguousBusInefficiently("17,x,13,19", 3000L));
+        assertEquals(754018, Day13.findContiguousBusInefficiently("67,7,59,61", 700000L));
+        assertEquals(779210, Day13.findContiguousBusInefficiently("67,x,7,59,61", 700000L));
+        assertEquals(1261476, Day13.findContiguousBusInefficiently("67,7,x,59,61", 1000000L));
+        assertEquals(1202161486, Day13.findContiguousBusInefficiently("1789,37,47,1889", 1000000000L));
+
+        assertEquals(1068781, Day13.findContiguousBusEfficiently(EXAMPLE_INPUT));
+        assertEquals(3417, Day13.findContiguousBusEfficiently("17,x,13,19"));
+        assertEquals(754018, Day13.findContiguousBusEfficiently("67,7,59,61"));
+        assertEquals(779210, Day13.findContiguousBusEfficiently("67,x,7,59,61"));
+        assertEquals(1261476, Day13.findContiguousBusEfficiently("67,7,x,59,61"));
+        assertEquals(1202161486, Day13.findContiguousBusEfficiently("1789,37,47,1889"));
     }
 
     @Test
@@ -40,6 +47,6 @@ public class Day13Test {
         final String instructions = IOUtils.toString(getClass().getResourceAsStream("/puzzle-data/2020/day13"), Charset.defaultCharset());
 
         LOGGER.info("Part 1: {}", Day13.findEarliestBus(instructions));
-        LOGGER.info("Part 2: {}", Day13.findContiguousBus(instructions, 803000000000000L));
+        LOGGER.info("Part 2: {}", Day13.findContiguousBusEfficiently(instructions));
     }
 }

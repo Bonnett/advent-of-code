@@ -29,7 +29,7 @@ public class Day13 {
         return closestBusId * closestBus;
     }
 
-    public static long findContiguousBus(final String timetable, final Long startValue) {
+    public static long findContiguousBusInefficiently(final String timetable, final Long startValue) {
         final String[] buses = timetable.substring(timetable.indexOf("\n") + 1).trim().split(",");
 
         final Map<Integer, Integer> busOffsets = new HashMap<>();
@@ -74,5 +74,71 @@ public class Day13 {
         }
 
         return -1;
+    }
+
+    public static long findContiguousBusEfficiently(final String timetable) {
+        final String[] buses = timetable.substring(timetable.indexOf("\n") + 1).trim().split(",");
+
+        final Map<Integer, Integer> busOffsets = new LinkedHashMap<>();
+
+        for (int i = 0; i < buses.length; i++) {
+            String bus = buses[i];
+            if (!bus.equals("x")) {
+                final int busId = Integer.parseInt(bus);
+                busOffsets.put(busId, i);
+            }
+        }
+
+        final long[] ids = new long[busOffsets.size()];
+        final long[] offsets = new long[busOffsets.size()];
+
+        int index = 0;
+        for (Map.Entry<Integer, Integer> bus : busOffsets.entrySet()) {
+            ids[index] = bus.getKey();
+            offsets[index] = bus.getKey() - bus.getValue();
+            index++;
+        }
+
+        return chineseRemainder(ids, offsets);
+    }
+
+    // Algorithm courtesy of https://rosettacode.org/wiki/Chinese_remainder_theorem#Java
+    public static long chineseRemainder(long[] n, long[] a) {
+
+        long prod = Arrays.stream(n).reduce(1, (i, j) -> i * j);
+
+        long p, sm = 0;
+        for (int i = 0; i < n.length; i++) {
+            p = prod / n[i];
+            sm += a[i] * mulInv(p, n[i]) * p;
+        }
+
+        return sm % prod;
+    }
+
+    private static long mulInv(long a, long b) {
+        long b0 = b;
+        long x0 = 0;
+        long x1 = 1;
+
+        if (b == 1) {
+            return 1;
+        }
+
+        while (a > 1) {
+            long q = a / b;
+            long amb = a % b;
+            a = b;
+            b = amb;
+            long xqx = x1 - q * x0;
+            x1 = x0;
+            x0 = xqx;
+        }
+
+        if (x1 < 0) {
+            x1 += b0;
+        }
+
+        return x1;
     }
 }
