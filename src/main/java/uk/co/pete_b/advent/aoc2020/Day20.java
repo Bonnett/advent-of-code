@@ -40,7 +40,7 @@ public class Day20 {
                 }
             }
 
-            // Corner pieces only touch 2 other tiles, edge tiles touch 3, middle tiles touch 4 - double these to cover the flipped variant
+            // Corner pieces only touch 2 other tiles, edge tiles touch 3, middle tiles touch 4 - double these to cover the clockwise variant
             if (matchingEdge == 4) {
                 cornerTiles.put(tile, matchingTiles);
             }
@@ -55,14 +55,14 @@ public class Day20 {
         final List<String> completedMap = pieceTogetherMap(cornerTiles, allTiles);
 
         final List<List<String>> orientations = new ArrayList<>();
-        orientations.add(rotateGrid(completedMap, false, Direction.UP));
-        orientations.add(rotateGrid(completedMap, false, Direction.RIGHT));
-        orientations.add(rotateGrid(completedMap, false, Direction.DOWN));
-        orientations.add(rotateGrid(completedMap, false, Direction.LEFT));
-        orientations.add(rotateGrid(completedMap, true, Direction.UP));
-        orientations.add(rotateGrid(completedMap, true, Direction.RIGHT));
-        orientations.add(rotateGrid(completedMap, true, Direction.DOWN));
-        orientations.add(rotateGrid(completedMap, true, Direction.LEFT));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.UP, false)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.RIGHT, false)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.DOWN, false)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.LEFT, false)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.UP, true)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.RIGHT, true)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.DOWN, true)));
+        orientations.add(rotateGrid(completedMap, new TileOrientation(Direction.LEFT, true)));
 
         final int numberOfWaves = StringUtils.join(completedMap, "").replaceAll("[.]", "").length();
 
@@ -95,26 +95,39 @@ public class Day20 {
         final int gridSize = (int) Math.sqrt(allTiles.size());
         final MapTile[][] grid = new MapTile[gridSize][gridSize];
 
-        // So weirdly it only works if I get the last corner and I mark it as flipped
-        final MapTile topLeft = new ArrayList<>(corners.keySet()).get(3);
+        // Select the first corner piece
+        final MapTile topLeft = new ArrayList<>(corners.keySet()).get(0);
         final List<MapTile> topLeftNeighbours = new ArrayList<>(corners.remove(topLeft));
-        topLeft.flipped = true;
 
+        // Arbitrarily assign the two adjacent pieces
         grid[0][0] = topLeft;
         grid[0][1] = topLeftNeighbours.get(0);
         grid[1][0] = topLeftNeighbours.get(1);
 
-        setLeftGridSpot(grid);
-        topLeft.finalisePosition();
+        // Now orient these pieces - first the piece to the right
+        TileOrientation tileOrientation = grid[0][1].getMatchingEdge(grid[0][0].getRightEdge(), Direction.LEFT);
+        while (tileOrientation == null) {
+            tileOrientation = grid[0][1].getMatchingEdge(grid[0][0].rotateTile().getRightEdge(), Direction.LEFT);
+        }
+
+        grid[0][1].tileOrientation = tileOrientation;
+
+        // Now the piece below - if the bottom edge doesn't match rotate the two tiles we've set 180 degrees and flip them
+        TileOrientation belowMatch = grid[1][0].getMatchingEdge(grid[0][0].getBottomEdge(), Direction.UP);
+        if (belowMatch == null) {
+            grid[0][0].rotateTile().rotateTile().flipTile();
+            grid[0][1].rotateTile().rotateTile().flipTile();
+
+            belowMatch = grid[1][0].getMatchingEdge(grid[0][0].getBottomEdge(), Direction.UP);
+        }
+
+        grid[1][0].tileOrientation = belowMatch;
+
+        grid[0][0].finalisePosition();
         grid[0][1].finalisePosition();
+        grid[1][0].finalisePosition();
 
-        final MapTile below = grid[1][0];
-        final MatchingEdge belowMatch = below.getMatchingEdge(topLeft.getBottomEdge());
-
-        below.flipped = belowMatch.getFlipped();
-        below.topEdge = belowMatch.getDirection();
-        below.finalisePosition();
-
+        // Remove the tile we've now set
         allTiles.remove(topLeft);
 
         Set<MapTile> tilesTouching;
@@ -135,10 +148,9 @@ public class Day20 {
                         if (touchingTile.isPlaced()) {
                             continue;
                         }
-                        final MatchingEdge matchesBottomEdge = touchingTile.getMatchingEdge(bottomEdge);
+                        final TileOrientation matchesBottomEdge = touchingTile.getMatchingEdge(bottomEdge, Direction.UP);
                         if (matchesBottomEdge != null) {
-                            touchingTile.flipped = matchesBottomEdge.getFlipped();
-                            touchingTile.topEdge = matchesBottomEdge.getDirection();
+                            touchingTile.tileOrientation = matchesBottomEdge;
                             grid[y + 1][x] = touchingTile;
                             tilesTouching.remove(touchingTile);
                             touchingTile.finalisePosition();
@@ -152,10 +164,9 @@ public class Day20 {
                     if (touchingTile.isPlaced()) {
                         continue;
                     }
-                    final MatchingEdge matchesRightEdge = touchingTile.getMatchingEdge(rightEdge);
+                    final TileOrientation matchesRightEdge = touchingTile.getMatchingEdge(rightEdge, Direction.LEFT);
                     if (matchesRightEdge != null) {
-                        touchingTile.flipped = matchesRightEdge.getFlipped();
-                        touchingTile.topEdge = matchesRightEdge.getDirection().getRight();
+                        touchingTile.tileOrientation = matchesRightEdge;
                         grid[y][x + 1] = touchingTile;
                         touchingTile.finalisePosition();
                         if (x + 2 == gridSize) {
@@ -185,72 +196,81 @@ public class Day20 {
         return completedMap;
     }
 
-    @SuppressWarnings("SuspiciousNameCombination")
-    private static void setLeftGridSpot(MapTile[][] grid) {
-        final MapTile tile = grid[0][0];
-        MatchingEdge matchingEdge = grid[0][1].getMatchingEdge(tile.getRightEdge());
-        if (matchingEdge != null) {
-            grid[0][1].flipped = matchingEdge.getFlipped();
-            grid[0][1].topEdge = matchingEdge.getDirection().getRight();
-            return;
-        }
+    public static List<String> rotateGrid(final List<String> originalTileData, final TileOrientation tileOrientation) {
+        final List<String> tileData = new ArrayList<>(originalTileData);
 
-        tile.topEdge = Direction.RIGHT;
-        matchingEdge = grid[0][1].getMatchingEdge(tile.getRightEdge());
-        if (matchingEdge != null) {
-            grid[0][1].flipped = matchingEdge.getFlipped();
-            grid[0][1].topEdge = matchingEdge.getDirection().getRight();
-            return;
-        }
+        if (tileOrientation.flipped) {
+            switch (tileOrientation.direction) {
+                case LEFT -> {
+                    final List<String> newData = new ArrayList<>();
+                    for (int i = 0; i < tileData.get(0).length(); i++) {
+                        final StringBuilder sb = new StringBuilder();
+                        for (String tileDatum : tileData) {
+                            sb.append(tileDatum.charAt(i));
+                        }
+                        newData.add(sb.toString());
+                    }
 
-        tile.topEdge = Direction.DOWN;
-        matchingEdge = grid[0][1].getMatchingEdge(tile.getRightEdge());
-        if (matchingEdge != null) {
-            grid[0][1].flipped = matchingEdge.getFlipped();
-            grid[0][1].topEdge = matchingEdge.getDirection().getRight();
-            return;
-        }
-
-        tile.topEdge = Direction.LEFT;
-        matchingEdge = grid[0][1].getMatchingEdge(tile.getRightEdge());
-        if (matchingEdge != null) {
-            grid[0][1].flipped = matchingEdge.getFlipped();
-            grid[0][1].topEdge = matchingEdge.getDirection().getRight();
-        }
-    }
-
-    private static List<String> rotateGrid(final List<String> originalTileData, final boolean flipped, final Direction orientation) {
-        List<String> tileData = new ArrayList<>(originalTileData);
-
-        if (flipped) {
-            tileData = tileData.stream().map(StringUtils::reverse).collect(Collectors.toList());
-        }
-
-        if (orientation == Direction.DOWN) {
-            Collections.reverse(tileData);
-            return tileData.stream().map(StringUtils::reverse).collect(Collectors.toList());
-        } else if (orientation == Direction.LEFT) {
-            List<String> newData = new ArrayList<>();
-            for (int i = 0; i < tileData.get(0).length(); i++) {
-                StringBuilder sb = new StringBuilder();
-                for (int j = tileData.size(); j > 0; j--) {
-                    sb.append(tileData.get(j - 1).charAt(i));
+                    return newData;
                 }
-                newData.add(sb.toString());
-            }
-
-            return newData;
-        } else if (orientation == Direction.RIGHT) {
-            List<String> newData = new ArrayList<>();
-            for (int i = tileData.get(0).length(); i > 0; i--) {
-                StringBuilder sb = new StringBuilder();
-                for (String tileDatum : tileData) {
-                    sb.append(tileDatum.charAt(i - 1));
+                case UP -> {
+                    return tileData.stream().map(StringUtils::reverse).collect(Collectors.toList());
                 }
-                newData.add(sb.toString());
-            }
+                case RIGHT -> {
+                    final List<String> newData = new ArrayList<>();
+                    for (int i = tileData.get(0).length(); i > 0; i--) {
+                        final StringBuilder sb = new StringBuilder();
+                        for (int j = tileData.size(); j > 0; j--) {
+                            sb.append(tileData.get(j - 1).charAt(i - 1));
+                        }
+                        newData.add(sb.toString());
+                    }
 
-            return newData;
+                    return newData;
+                }
+                case DOWN -> {
+                    Collections.reverse(tileData);
+                    return tileData;
+                }
+            }
+        } else {
+            switch (tileOrientation.direction) {
+                case LEFT -> {
+                    final List<String> newData = new ArrayList<>();
+
+                    for (int i = 0; i < tileData.get(0).length(); i++) {
+                        final StringBuilder sb = new StringBuilder();
+                        for (int j = tileData.size(); j > 0; j--) {
+                            sb.append(tileData.get(j - 1).charAt(i));
+                        }
+
+                        newData.add(sb.toString());
+                    }
+
+                    return newData;
+                }
+                case UP -> {
+                    return originalTileData;
+                }
+                case RIGHT -> {
+                    final List<String> newData = new ArrayList<>();
+
+                    for (int i = tileData.get(0).length(); i > 0; i--) {
+                        final StringBuilder sb = new StringBuilder();
+                        for (String tileDatum : tileData) {
+                            sb.append(tileDatum.charAt(i - 1));
+                        }
+
+                        newData.add(sb.toString());
+                    }
+
+                    return newData;
+                }
+                case DOWN -> {
+                    Collections.reverse(tileData);
+                    return tileData.stream().map(StringUtils::reverse).collect(Collectors.toList());
+                }
+            }
         }
 
         return tileData;
@@ -286,65 +306,67 @@ public class Day20 {
         private final long tileId;
         private List<String> tileData;
 
-        private final Map<String, Direction> normalEdgeToDirection;
-        private final Map<Direction, String> directionToNormalEdge;
+        private final Map<TileOrientation, Map<Direction, String>> orientationToEdge;
+        private final Map<Pair<String, Direction>, TileOrientation>  tileEdgeToOrientation;
 
-        private final Map<String, Direction> flippedEdgeToDirection;
-        private final Map<Direction, String> directionToFlippedEdge;
+        private final Set<String> allEdges;
 
-        private final List<String> allEdges;
+        private TileOrientation tileOrientation;
 
-        private boolean flipped = false;
-        private Direction topEdge = Direction.UP;
         private boolean placed = false;
 
+        @SuppressWarnings("SuspiciousNameCombination")
         private MapTile(final long tileId, final List<String> tileData) {
             this.tileId = tileId;
             this.tileData = tileData;
+            this.tileOrientation = new TileOrientation(Direction.UP, false);
 
-            final String top = tileData.get(0);
-            final String right = tileData.stream().map(x -> x.substring(x.length() - 1)).collect(Collectors.joining());
-            final String bottom = StringUtils.reverse(tileData.get(tileData.size() - 1));
-            final String left = StringUtils.reverse(tileData.stream().map(x -> x.substring(0, 1)).collect(Collectors.joining()));
+            final String topLTR = tileData.get(0);
+            final String topRTL = StringUtils.reverse(topLTR);
+            final String rightTTB = tileData.stream().map(x -> x.substring(x.length() - 1)).collect(Collectors.joining());
+            final String rightBTT = StringUtils.reverse(rightTTB);
+            final String bottomLTR = tileData.get(tileData.size() - 1);
+            final String bottomRTL = StringUtils.reverse(bottomLTR);
+            final String leftTTB = tileData.stream().map(x -> x.substring(0, 1)).collect(Collectors.joining());
+            final String leftBTT = StringUtils.reverse(leftTTB);
 
-            this.normalEdgeToDirection = new HashMap<>();
-            this.directionToNormalEdge = new HashMap<>();
+            this.orientationToEdge = new HashMap<>();
+            this.tileEdgeToOrientation = new HashMap<>();
 
-            this.normalEdgeToDirection.put(top, Direction.UP);
-            this.directionToNormalEdge.put(Direction.UP, top);
+            this.orientationToEdge.put(new TileOrientation(Direction.UP, false), getOrientationMap(topLTR, rightTTB, bottomLTR, leftTTB));
+            this.orientationToEdge.put(new TileOrientation(Direction.RIGHT, false), getOrientationMap(rightTTB, bottomRTL, leftTTB, topRTL));
+            this.orientationToEdge.put(new TileOrientation(Direction.DOWN, false), getOrientationMap(bottomRTL, leftBTT, topRTL, rightBTT));
+            this.orientationToEdge.put(new TileOrientation(Direction.LEFT, false), getOrientationMap(leftBTT, topLTR, rightBTT, bottomLTR));
 
-            this.normalEdgeToDirection.put(right, Direction.RIGHT);
-            this.directionToNormalEdge.put(Direction.RIGHT, right);
+            this.orientationToEdge.put(new TileOrientation(Direction.UP, true), getOrientationMap(topRTL, leftTTB, bottomRTL, rightTTB));
+            this.orientationToEdge.put(new TileOrientation(Direction.LEFT, true), getOrientationMap(leftTTB, bottomLTR, rightTTB, topLTR));
+            this.orientationToEdge.put(new TileOrientation(Direction.DOWN, true), getOrientationMap(bottomLTR, rightBTT, topLTR, leftBTT));
+            this.orientationToEdge.put(new TileOrientation(Direction.RIGHT, true), getOrientationMap(rightBTT, topRTL, leftBTT, bottomRTL));
 
-            this.normalEdgeToDirection.put(bottom, Direction.DOWN);
-            this.directionToNormalEdge.put(Direction.DOWN, bottom);
+            this.allEdges = new HashSet<>(Arrays.asList(topLTR, topRTL, rightTTB, rightBTT, bottomLTR, bottomRTL, leftTTB, leftBTT));
 
-            this.normalEdgeToDirection.put(left, Direction.LEFT);
-            this.directionToNormalEdge.put(Direction.LEFT, left);
+            for (Map.Entry<TileOrientation, Map<Direction, String>> entry : this.orientationToEdge.entrySet()) {
+                this.tileEdgeToOrientation.put(Pair.of(entry.getValue().get(Direction.UP), Direction.UP), entry.getKey());
+                this.tileEdgeToOrientation.put(Pair.of(entry.getValue().get(Direction.RIGHT), Direction.RIGHT), entry.getKey());
+                this.tileEdgeToOrientation.put(Pair.of(entry.getValue().get(Direction.DOWN), Direction.DOWN), entry.getKey());
+                this.tileEdgeToOrientation.put(Pair.of(entry.getValue().get(Direction.LEFT), Direction.LEFT), entry.getKey());
+            }
+        }
 
-            this.flippedEdgeToDirection = new HashMap<>();
-            this.directionToFlippedEdge = new HashMap<>();
+        private Map<Direction, String> getOrientationMap(final String top, final String right, final String bottom, final String left) {
+            final Map<Direction, String> orientations = new HashMap<>();
+            orientations.put(Direction.UP, top);
+            orientations.put(Direction.RIGHT, right);
+            orientations.put(Direction.DOWN, bottom);
+            orientations.put(Direction.LEFT, left);
 
-            this.flippedEdgeToDirection.put(StringUtils.reverse(top), Direction.UP);
-            this.directionToFlippedEdge.put(Direction.UP, StringUtils.reverse(top));
-
-            this.flippedEdgeToDirection.put(StringUtils.reverse(right), Direction.LEFT);
-            this.directionToFlippedEdge.put(Direction.LEFT, StringUtils.reverse(right));
-
-            this.flippedEdgeToDirection.put(StringUtils.reverse(bottom), Direction.DOWN);
-            this.directionToFlippedEdge.put(Direction.DOWN, StringUtils.reverse(bottom));
-
-            this.flippedEdgeToDirection.put(StringUtils.reverse(left), Direction.RIGHT);
-            this.directionToFlippedEdge.put(Direction.RIGHT, StringUtils.reverse(left));
-
-            this.allEdges = new ArrayList<>(this.normalEdgeToDirection.keySet());
-            this.allEdges.addAll(this.flippedEdgeToDirection.keySet());
+            return orientations;
         }
 
         private void finalisePosition() {
             this.placed = true;
 
-            this.tileData = rotateGrid(this.tileData, this.flipped, this.topEdge);
+            this.tileData = rotateGrid(this.tileData, this.tileOrientation);
         }
 
         private boolean isPlaced() {
@@ -356,20 +378,14 @@ public class Day20 {
         }
 
         public boolean hasMatchingEdge(final String edge) {
-            return this.normalEdgeToDirection.containsKey(edge) || this.flippedEdgeToDirection.containsKey(edge);
+            return this.allEdges.contains(edge);
         }
 
-        public MatchingEdge getMatchingEdge(final String edge) {
-            if (this.normalEdgeToDirection.containsKey(edge)) {
-                return new MatchingEdge(this.normalEdgeToDirection.get(edge), false);
-            } else if (this.flippedEdgeToDirection.containsKey(edge)) {
-                return new MatchingEdge(this.flippedEdgeToDirection.get(edge), true);
-            } else {
-                return null;
-            }
+        public TileOrientation getMatchingEdge(final String edge, final Direction direction) {
+            return this.tileEdgeToOrientation.get(Pair.of(edge, direction));
         }
 
-        private List<String> getEdges() {
+        private Set<String> getEdges() {
             return this.allEdges;
         }
 
@@ -389,31 +405,28 @@ public class Day20 {
         }
 
         public String getRightEdge() {
-            if (flipped) {
-                return StringUtils.reverse(this.directionToFlippedEdge.get(topEdge.getRight()));
-            }
-
-            return StringUtils.reverse(this.directionToNormalEdge.get(topEdge.getRight()));
+            return this.orientationToEdge.get(this.tileOrientation).get(Direction.RIGHT);
         }
 
         public String getBottomEdge() {
-            if (flipped) {
-                if (topEdge == Direction.RIGHT) {
-                    return StringUtils.reverse(this.directionToFlippedEdge.get(topEdge.getLeft().getLeft()));
-                }
+            return this.orientationToEdge.get(this.tileOrientation).get(Direction.DOWN);
+        }
 
-                return this.directionToNormalEdge.get(topEdge.getLeft().getLeft());
-            }
+        private MapTile rotateTile() {
+            this.tileOrientation = new TileOrientation(this.tileOrientation.direction.getLeft(), this.tileOrientation.flipped);
+            return this;
+        }
 
-            return this.directionToFlippedEdge.get(topEdge.getLeft().getLeft());
+        public void flipTile() {
+            this.tileOrientation = new TileOrientation(this.tileOrientation.direction, !this.tileOrientation.flipped);
         }
     }
 
-    private static class MatchingEdge extends Pair<Direction, Boolean> {
+    private static class TileOrientation extends Pair<Direction, Boolean> {
         private final Direction direction;
         private Boolean flipped;
 
-        public MatchingEdge(final Direction direction, final Boolean flipped) {
+        public TileOrientation(final Direction direction, final Boolean flipped) {
             this.direction = direction;
             this.flipped = flipped;
         }
@@ -425,10 +438,6 @@ public class Day20 {
         @Override
         public Direction getLeft() {
             return direction;
-        }
-
-        public Boolean getFlipped() {
-            return flipped;
         }
 
         @Override
