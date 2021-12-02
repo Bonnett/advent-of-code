@@ -34,7 +34,7 @@ dependencies {
 
 test {
     useJUnitPlatform {
-        excludeTags '2016', '2017', '2018', '2019', '2020'
+        excludeTags '2016', '2017', '2018', '2019', '2020', '2021'
     }
 }
 
@@ -65,5 +65,11 @@ task test2019(type: Test) {
 task test2020(type: Test) {
     useJUnitPlatform {
         includeTags '2020'
+    }
+}
+
+task test2021(type: Test) {
+    useJUnitPlatform {
+        includeTags '2021'
     }
 }
