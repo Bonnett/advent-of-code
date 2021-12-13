@@ -37,15 +37,9 @@ public class Day13 {
         width++;
         height++;
 
-        int[][] grid = new int[height][width];
-
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                grid[y][x] = coordinates.contains(new Coordinate(x, y)) ? 1 : 0;
-            }
-        }
 
         for (String foldRule : foldRules) {
+            final Set<Coordinate> newCoordinates = new HashSet<>();
             String axis = foldRule.substring(11, 12);
             int value = Integer.parseInt(foldRule.substring(13));
 
@@ -54,60 +48,56 @@ public class Day13 {
                 if (height % 2 == 1) {
                     newHeight--;
                 }
-                final int[][] newGrid = new int[newHeight][width];
-                System.arraycopy(grid, 0, newGrid, 0, newHeight);
 
-                for (int y = height - 1; y > newHeight; y--) {
-                    for (int x = 0; x < grid[y].length; x++) {
-                        newGrid[(value - (y - value))][x] |= grid[y][x];
+                for (Coordinate coordinate : coordinates) {
+                    if (coordinate.getY() < newHeight) {
+                        newCoordinates.add(coordinate);
+                    } else {
+                        newCoordinates.add(new Coordinate(coordinate.getX(), (value - (coordinate.getY() - value))));
                     }
                 }
 
                 height = newHeight;
-                grid = newGrid;
             } else {
                 int newWidth = width - value;
                 if (width % 2 == 1) {
                     newWidth--;
                 }
-                final int[][] newGrid = new int[height][newWidth];
-                for (int y = 0; y < newGrid.length; y++) {
-                    System.arraycopy(grid[y], 0, newGrid[y], 0, newWidth);
-                }
-                for (int y = 0; y < newGrid.length; y++) {
-                    for (int x = value + 1; x < width; x++) {
-                        newGrid[y][(value - (x - value))] |= grid[y][x];
+
+                for (Coordinate coordinate : coordinates) {
+                    if (coordinate.getX() < newWidth) {
+                        newCoordinates.add(coordinate);
+                    } else {
+                        newCoordinates.add(new Coordinate((value - (coordinate.getX() - value)), coordinate.getY()));
                     }
                 }
 
                 width = newWidth;
-                grid = newGrid;
             }
 
+            coordinates.clear();
+            coordinates.addAll(newCoordinates);
             if (stopAtOne) {
                 break;
             }
         }
 
-        return debugGrid(grid, !stopAtOne);
+        if (!stopAtOne) {
+            debugGrid(height, width, coordinates);
+        }
+
+        return coordinates.size();
     }
 
-    private static int debugGrid(int[][] grid, boolean printOutput) {
-        int total = 0;
+    private static void debugGrid(int height, int width, Set<Coordinate> coordinates) {
         final StringBuilder sb = new StringBuilder();
-        for (int[] ints : grid) {
-            for (int anInt : ints) {
-                sb.append((anInt == 1) ? "#" : " ");
-                total += anInt;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                sb.append(coordinates.contains(new Coordinate(x, y)) ? "#" : " ");
             }
             sb.append("\r\n");
         }
         sb.append("\r\n");
-        if (printOutput) {
-
-            LOGGER.info("\r\n{}", sb);
-        }
-
-        return total;
+        LOGGER.info("\r\n{}", sb);
     }
 }
