@@ -2,7 +2,7 @@ package uk.co.pete_b.advent.aoc2021;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.pete_b.advent.utils.Coordinate;
+import uk.co.pete_b.advent.utils.LongCoordinate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,10 +13,8 @@ public class Day13 {
     private static final Logger LOGGER = LoggerFactory.getLogger(Day13.class);
 
     public static int calculateNumberOfDots(final List<String> rules, final boolean stopAtOne) {
-        final Set<Coordinate> coordinates = new HashSet<>();
+        final Set<LongCoordinate> coordinates = new HashSet<>();
         final List<String> foldRules = new ArrayList<>();
-        int width = 0;
-        int height = 0;
         for (String rule : rules) {
             if (rule.isEmpty()) {
                 continue;
@@ -26,53 +24,33 @@ public class Day13 {
                 foldRules.add(rule);
             } else {
                 final String[] coords = rule.split(",");
-                final int x = Integer.parseInt(coords[0]);
-                final int y = Integer.parseInt(coords[1]);
-                width = Math.max(x, width);
-                height = Math.max(y, height);
-                coordinates.add(new Coordinate(x, y));
+                final long x = Long.parseLong(coords[0]);
+                final long y = Long.parseLong(coords[1]);
+                coordinates.add(new LongCoordinate(x, y));
             }
         }
-        // Factor in starting at 0
-        width++;
-        height++;
-
 
         for (String foldRule : foldRules) {
-            final Set<Coordinate> newCoordinates = new HashSet<>();
+            final Set<LongCoordinate> newCoordinates = new HashSet<>();
             String axis = foldRule.substring(11, 12);
-            int value = Integer.parseInt(foldRule.substring(13));
+            long value = Long.parseLong(foldRule.substring(13));
 
             if (axis.equals("y")) {
-                int newHeight = height - value;
-                if (height % 2 == 1) {
-                    newHeight--;
-                }
-
-                for (Coordinate coordinate : coordinates) {
-                    if (coordinate.getY() < newHeight) {
+                for (LongCoordinate coordinate : coordinates) {
+                    if (coordinate.getY() < value) {
                         newCoordinates.add(coordinate);
                     } else {
-                        newCoordinates.add(new Coordinate(coordinate.getX(), (value - (coordinate.getY() - value))));
+                        newCoordinates.add(new LongCoordinate(coordinate.getX(), (value - (coordinate.getY() - value))));
                     }
                 }
-
-                height = newHeight;
             } else {
-                int newWidth = width - value;
-                if (width % 2 == 1) {
-                    newWidth--;
-                }
-
-                for (Coordinate coordinate : coordinates) {
-                    if (coordinate.getX() < newWidth) {
+                for (LongCoordinate coordinate : coordinates) {
+                    if (coordinate.getX() < value) {
                         newCoordinates.add(coordinate);
                     } else {
-                        newCoordinates.add(new Coordinate((value - (coordinate.getX() - value)), coordinate.getY()));
+                        newCoordinates.add(new LongCoordinate((value - (coordinate.getX() - value)), coordinate.getY()));
                     }
                 }
-
-                width = newWidth;
             }
 
             coordinates.clear();
@@ -83,17 +61,26 @@ public class Day13 {
         }
 
         if (!stopAtOne) {
-            debugGrid(height, width, coordinates);
+            debugGrid(coordinates);
         }
 
         return coordinates.size();
     }
 
-    private static void debugGrid(int height, int width, Set<Coordinate> coordinates) {
+    private static void debugGrid(Set<LongCoordinate> coordinates) {
+        long width = 0;
+        long height = 0;
+        for (LongCoordinate coord : coordinates) {
+            width = Math.max(coord.getX(), width);
+            height = Math.max(coord.getY(), height);
+        }
+        width++;
+        height++;
+
         final StringBuilder sb = new StringBuilder();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                sb.append(coordinates.contains(new Coordinate(x, y)) ? "#" : " ");
+        for (long y = 0; y < height; y++) {
+            for (long x = 0; x < width; x++) {
+                sb.append(coordinates.contains(new LongCoordinate(x, y)) ? "#" : " ");
             }
             sb.append("\r\n");
         }

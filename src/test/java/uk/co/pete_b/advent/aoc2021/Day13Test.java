@@ -55,4 +55,11 @@ public class Day13Test {
         LOGGER.info("Part 2: ");
         Day13.calculateNumberOfDots(instructions, false);
     }
+
+    @Test
+    public void runRR() throws IOException {
+        final List<String> instructions = IOUtils.readLines(Objects.requireNonNull(getClass().getResourceAsStream("/puzzle-data/2021/day13_rr")), Charset.defaultCharset());
+
+        Day13.calculateNumberOfDots(instructions, false);
+    }
 }
