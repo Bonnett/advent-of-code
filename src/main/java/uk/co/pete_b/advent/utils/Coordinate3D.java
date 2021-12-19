@@ -13,6 +13,10 @@ public class Coordinate3D {
         this.z = z;
     }
 
+    public static Coordinate3D vector(final Coordinate3D start, final Coordinate3D end) {
+        return new Coordinate3D(end.x - start.x, end.y - start.y, end.z - start.z);
+    }
+
     public int getX() {
         return this.x;
     }
@@ -35,6 +39,10 @@ public class Coordinate3D {
         this.x += movement.x;
         this.y += movement.y;
         this.z += movement.z;
+    }
+
+    public int getManhattanDistance() {
+        return Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z);
     }
 
     @Override
