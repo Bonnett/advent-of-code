@@ -6,9 +6,14 @@ public class Coordinate implements Comparable<Coordinate> {
     protected int x;
     protected int y;
 
-    public Coordinate(int x, int y) {
+    public Coordinate(final int x, final int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Coordinate(final Coordinate location) {
+        this.x = location.x;
+        this.y = location.y;
     }
 
     public int getX() {
