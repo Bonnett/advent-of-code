@@ -69,3 +69,9 @@ task test2021(type: Test) {
         includeTags '2021'
     }
 }
+
+task test2022(type: Test) {
+    useJUnitPlatform {
+        includeTags '2022'
+    }
+}
