@@ -5,30 +5,36 @@ import uk.co.pete_b.advent.utils.Coordinate;
 import java.util.*;
 
 public class Day12 {
-    public static int findFewestSteps(final List<String> inputMap) {
-        final HeightMap map = parseHeightMap(inputMap);
-        return findShortestRoute(map.heightMap, map.startingPosition, map.endPosition);
-    }
-
-    public static int findFewestStepsWithAllStartingPositions(final List<String> inputMap) {
+    public static Answer findFewestSteps(final List<String> inputMap) {
         final HeightMap map = parseHeightMap(inputMap);
 
-        return map.startingPoints.parallelStream()
-                .map(startingPoint -> findShortestRoute(map.heightMap, startingPoint, map.endPosition))
-                .min(Comparator.comparing(Integer::valueOf)).orElseThrow();
+        int shortestRoute = Integer.MAX_VALUE;
+
+        final Map<Coordinate, Integer> distances = findShortestRoute(map.heightMap, map.endPosition);
+
+        for (Coordinate startingPoint : map.startingPoints)
+        {
+            int route = distances.getOrDefault(startingPoint, Integer.MAX_VALUE);
+            if (route < shortestRoute)
+            {
+                shortestRoute = route;
+            }
+        }
+
+        return new Answer(distances.get(map.startingPosition) - 1, shortestRoute - 1);
     }
 
-    private static int findShortestRoute(final Map<Coordinate, Integer> heightMap, final Coordinate startingPosition, final Coordinate endPosition) {
-        final TreeRoute route = new TreeRoute(startingPosition);
+    private static Map<Coordinate, Integer> findShortestRoute(final Map<Coordinate, Integer> heightMap, final Coordinate endPosition) {
+        final TreeRoute route = new TreeRoute(endPosition);
         final Map<Coordinate, Integer> shortestRoute = new HashMap<>();
 
         final PriorityQueue<TreeRoute> queue = new PriorityQueue<>((o1, o2) -> {
-            int o1Height = heightMap.get(o1.currentPoint);
-            int o2Height = heightMap.get(o2.currentPoint);
+            final int o1Height = heightMap.get(o1.currentPoint);
+            final int o2Height = heightMap.get(o2.currentPoint);
             if (o2Height > o1Height) {
-                return 1;
-            } else if (o2Height < o1Height) {
                 return -1;
+            } else if (o2Height < o1Height) {
+                return 1;
             } else {
                 return Comparator.comparing(TreeRoute::getSteps).compare(o1, o2);
             }
@@ -45,19 +51,15 @@ public class Day12 {
 
             shortestRoute.put(current.currentPoint, current.getSteps());
 
-            if (current.currentPoint.equals(endPosition)) {
-                continue;
-            }
-
             for (final Coordinate adjacent : getAdjacentSquares(current.currentPoint)) {
                 if (heightMap.containsKey(adjacent) && !current.getCurrentRoute().contains(adjacent) &&
-                        (heightMap.get(adjacent) - heightMap.get(current.getCurrentPoint()) <= 1)) {
+                        heightMap.get(adjacent) - heightMap.get(current.getCurrentPoint()) >= -1) {
                     queue.add(new TreeRoute(current, adjacent));
                 }
             }
         }
 
-        return shortestRoute.getOrDefault(endPosition, Integer.MAX_VALUE) - 1;
+        return shortestRoute;
     }
 
     private static List<Coordinate> getAdjacentSquares(final Coordinate cave) {
@@ -125,5 +127,9 @@ public class Day12 {
         public Coordinate getCurrentPoint() {
             return currentPoint;
         }
+    }
+
+    public record Answer(int shortestFromStart, int shortestInGeneral) {
+
     }
 }

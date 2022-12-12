@@ -28,19 +28,20 @@ public class Day12Test {
 
     @Test
     public void testExamplesPart1() throws IOException {
-        assertEquals(31, Day12.findFewestSteps(IOUtils.readLines(new StringReader(HEIGHT_MAP))));
+        assertEquals(31, Day12.findFewestSteps(IOUtils.readLines(new StringReader(HEIGHT_MAP))).shortestFromStart());
     }
 
     @Test
     public void testExamplesPart2() throws IOException {
-        assertEquals(29, Day12.findFewestStepsWithAllStartingPositions(IOUtils.readLines(new StringReader(HEIGHT_MAP))));
+        assertEquals(29, Day12.findFewestSteps(IOUtils.readLines(new StringReader(HEIGHT_MAP))).shortestInGeneral());
     }
 
     @Test
     public void getAnswers() throws IOException {
         final List<String> heightMap = IOUtils.readLines(Objects.requireNonNull(getClass().getResourceAsStream("/puzzle-data/2022/day12")), Charset.defaultCharset());
 
-        LOGGER.info("Part 1: {}", Day12.findFewestSteps(heightMap));
-        LOGGER.info("Part 2: {}", Day12.findFewestStepsWithAllStartingPositions(heightMap));
+        final Day12.Answer answer = Day12.findFewestSteps(heightMap);
+        LOGGER.info("Part 1: {}", answer.shortestFromStart());
+        LOGGER.info("Part 2: {}", answer.shortestInGeneral());
     }
 }
