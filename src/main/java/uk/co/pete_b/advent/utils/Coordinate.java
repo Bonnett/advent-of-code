@@ -20,8 +20,24 @@ public class Coordinate implements Comparable<Coordinate> {
         return x;
     }
 
+    public void shiftLeft() {
+        this.x--;
+    }
+
+    public void shiftRight() {
+        this.x++;
+    }
+
     public int getY() {
         return y;
+    }
+
+    public void shiftUp() {
+        this.y--;
+    }
+
+    public void shiftDown() {
+        this.y++;
     }
 
     public Coordinate left() {
