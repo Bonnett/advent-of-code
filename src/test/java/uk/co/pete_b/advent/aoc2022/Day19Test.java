@@ -29,15 +29,11 @@ public class Day19Test {
     }
 
     @Test
-    public void testExamplesPart2() throws IOException {
-        //assertEquals(58, Day19.calculateQualityTotal(IOUtils.readLines(new StringReader(EXAMPLE_BLUEPRINTS))));
-    }
-
-    @Test
     public void getAnswers() throws IOException {
         final List<String> cubes = IOUtils.readLines(Objects.requireNonNull(getClass().getResourceAsStream("/puzzle-data/2022/day19")), Charset.defaultCharset());
 
         LOGGER.info("Part 1: {}", Day19.calculateQualityTotal(cubes));
+        // This takes a while - so commented out here, should return 27720
         // LOGGER.info("Part 2: {}",  Day19.calculateQualityTotalWithReducedList(cubes));
     }
 }
