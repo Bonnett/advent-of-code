@@ -17,17 +17,19 @@ public enum Direction {
     }
 
     public Direction getLeft() {
-        if (left == null) {
+        if (this.left == null) {
             init();
         }
-        return left;
+
+        return this.left;
     }
 
     public Direction getRight() {
-        if (right == null) {
+        if (this.right == null) {
             init();
         }
-        return right;
+
+        return this.right;
     }
 
     private void init() {
