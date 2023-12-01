@@ -18,20 +18,20 @@ repositories {
 }
 
 dependencies {
-    implementation 'ch.qos.logback:logback-core:1.2.7'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
-    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'ch.qos.logback:logback-core:1.4.13'
+    implementation 'commons-io:commons-io:2.13.0'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.slf4j:slf4j-api:1.7.36'
     implementation 'com.github.dpaukov:combinatoricslib3:3.3.0'
 
-    testImplementation 'ch.qos.logback:logback-classic:1.2.7'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.13'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
 }
 
 test {
     useJUnitPlatform {
-        excludeTags '2016', '2017', '2018', '2019', '2020', '2021'
+        excludeTags '2016', '2017', '2018', '2019', '2020', '2021', '2022','20230'
     }
 }
 
@@ -74,5 +74,11 @@ task test2021(type: Test) {
 task test2022(type: Test) {
     useJUnitPlatform {
         includeTags '2022'
+    }
+}
+
+task test2023(type: Test) {
+    useJUnitPlatform {
+        includeTags '2023'
     }
 }
