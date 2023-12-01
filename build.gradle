@@ -29,6 +29,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
 }
 
+tasks.withType(Test) {
+    testLogging {
+        events "standardOut", "passed", "skipped", "failed"
+    }
+}
+
 test {
     useJUnitPlatform {
         excludeTags '2016', '2017', '2018', '2019', '2020', '2021', '2022','20230'
