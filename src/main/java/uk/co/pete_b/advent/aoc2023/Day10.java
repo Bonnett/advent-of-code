@@ -4,6 +4,8 @@ import uk.co.pete_b.advent.utils.Coordinate;
 
 import java.util.*;
 
+import static uk.co.pete_b.advent.utils.Maths.shoelaceArea;
+
 public class Day10 {
     public static Answer findFarthestPipe(final List<String> pipeLayout) {
         Coordinate startingPoint = null;
@@ -110,17 +112,6 @@ public class Day10 {
     private static Coordinate getNextPipe(final Map<Coordinate, Set<Coordinate>> pipeMap, final Coordinate currentPipe, final Coordinate lastPipe) {
         final Set<Coordinate> connections = pipeMap.get(currentPipe);
         return connections.stream().filter(pipe -> !pipe.equals(lastPipe)).findFirst().orElseThrow();
-    }
-
-    // Shoelace Area algorithm courtesy of https://rosettacode.org/wiki/Shoelace_formula_for_polygonal_area#Java
-    private static int shoelaceArea(final List<Coordinate> shape) {
-        int n = shape.size();
-        double a = 0.0;
-        for (int i = 0; i < n - 1; i++) {
-            a += shape.get(i).getX() * shape.get(i + 1).getY() - shape.get(i + 1).getX() * shape.get(i).getY();
-        }
-
-        return (int) Math.abs(a + shape.get(n - 1).getX() * shape.get(0).getY() - shape.get(0).getX() * shape.get(n - 1).getY()) / 2;
     }
 
     public record Answer(int steps, int enclosedPoints) {
