@@ -13,6 +13,12 @@ public class Coordinate3D {
         this.z = z;
     }
 
+    public Coordinate3D(final Coordinate3D coordinate) {
+        this.x = coordinate.x;
+        this.y = coordinate.y;
+        this.z = coordinate.z;
+    }
+
     public static Coordinate3D vector(final Coordinate3D start, final Coordinate3D end) {
         return new Coordinate3D(end.x - start.x, end.y - start.y, end.z - start.z);
     }
