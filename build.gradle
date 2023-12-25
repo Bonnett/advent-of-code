@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.36'
     // Note c:/unzipped/z3-4.12.4-x64-win/bin/ needs to be in the path
     implementation ':com.microsoft.z3'
+    implementation'org.jgrapht:jgrapht-core:1.5.2'
 
     testImplementation 'ch.qos.logback:logback-classic:1.4.13'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
